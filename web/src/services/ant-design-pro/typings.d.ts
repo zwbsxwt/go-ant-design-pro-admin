@@ -15,6 +15,10 @@ declare namespace API {
     unreadCount?: number;
     country?: string;
     access?: string;
+    username?: string;
+    role?: string;
+    status?: 'ACTIVE' | 'DISABLED';
+    menuPermissions?: string[];
     geographic?: {
       province?: { label?: string; key?: string };
       city?: { label?: string; key?: string };
@@ -27,6 +31,9 @@ declare namespace API {
     status?: string;
     type?: string;
     currentAuthority?: string;
+    token?: string;
+    expiresAt?: string;
+    errorMessage?: string;
   };
 
   type PageParams = {

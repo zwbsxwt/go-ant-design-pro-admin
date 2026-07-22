@@ -20,11 +20,11 @@ implementation and testing of each story.
 
 **Purpose**: Prepare contracts, generated API shape, and integration scaffolding.
 
-- [ ] T001 Review auth API contract in specs/001-min-login-integration/contracts/auth-api.yaml
-- [ ] T002 Review frontend auth contract in specs/001-min-login-integration/contracts/frontend-auth-contract.md
-- [ ] T003 Review gateway route contract in specs/001-min-login-integration/contracts/gateway-routes.md
-- [ ] T004 Create Kratos auth API directory server/admin-service/api/auth/v1
-- [ ] T005 Create frontend auth service directory web/src/services/admin
+- [x] T001 Review auth API contract in specs/001-min-login-integration/contracts/auth-api.yaml
+- [x] T002 Review frontend auth contract in specs/001-min-login-integration/contracts/frontend-auth-contract.md
+- [x] T003 Review gateway route contract in specs/001-min-login-integration/contracts/gateway-routes.md
+- [x] T004 Create Kratos auth API directory server/admin-service/api/auth/v1
+- [x] T005 Create frontend auth service directory web/src/services/admin
 
 ---
 
@@ -34,18 +34,18 @@ implementation and testing of each story.
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T006 Define auth protobuf service and messages in server/admin-service/api/auth/v1/auth.proto
-- [ ] T007 Define auth error reasons in server/admin-service/api/auth/v1/error_reason.proto
-- [ ] T008 Regenerate Kratos API bindings from server/admin-service/api/auth/v1/auth.proto
-- [ ] T009 [P] Add auth entity and repository interface in server/admin-service/internal/biz/auth.go
-- [ ] T010 [P] Add seeded user repository implementation in server/admin-service/internal/data/auth.go
-- [ ] T011 Add auth usecase constructor and provider wiring in server/admin-service/internal/biz/biz.go
-- [ ] T012 Add data provider wiring for auth repository in server/admin-service/internal/data/data.go
-- [ ] T013 Add auth service constructor and provider wiring in server/admin-service/internal/service/service.go
-- [ ] T014 Regenerate Wire dependency injection in server/admin-service/cmd/admin-service/wire_gen.go
-- [ ] T015 [P] Add browser auth-state helper in web/src/utils/authState.ts
-- [ ] T016 [P] Add admin auth service wrapper in web/src/services/admin/auth.ts
-- [ ] T017 Update frontend API typings for token and menu permissions in web/src/services/ant-design-pro/typings.d.ts
+- [x] T006 Define auth protobuf service and messages in server/admin-service/api/auth/v1/auth.proto
+- [x] T007 Define auth error reasons in server/admin-service/api/auth/v1/error_reason.proto
+- [x] T008 Regenerate Kratos API bindings from server/admin-service/api/auth/v1/auth.proto
+- [x] T009 [P] Add auth entity and repository interface in server/admin-service/internal/biz/auth.go
+- [x] T010 [P] Add seeded user repository implementation in server/admin-service/internal/data/auth.go
+- [x] T011 Add auth usecase constructor and provider wiring in server/admin-service/internal/biz/biz.go
+- [x] T012 Add data provider wiring for auth repository in server/admin-service/internal/data/data.go
+- [x] T013 Add auth service constructor and provider wiring in server/admin-service/internal/service/service.go
+- [x] T014 Regenerate Wire dependency injection in server/admin-service/cmd/admin-service/wire_gen.go
+- [x] T015 [P] Add browser auth-state helper in web/src/utils/authState.ts
+- [x] T016 [P] Add admin auth service wrapper in web/src/services/admin/auth.ts
+- [x] T017 Update frontend API typings for token and menu permissions in web/src/services/ant-design-pro/typings.d.ts
 
 **Checkpoint**: Backend auth API can compile conceptually, frontend has a planned auth-state surface, and all user stories can build on the same contract.
 
@@ -59,15 +59,15 @@ implementation and testing of each story.
 
 ### Implementation for User Story 1
 
-- [ ] T018 [US1] Implement Login usecase behavior in server/admin-service/internal/biz/auth.go
-- [ ] T019 [US1] Implement seeded admin credential verification in server/admin-service/internal/data/auth.go
-- [ ] T020 [US1] Implement Login transport method in server/admin-service/internal/service/auth.go
-- [ ] T021 [US1] Register AuthService HTTP endpoint in server/admin-service/internal/server/http.go
-- [ ] T022 [US1] Register AuthService gRPC endpoint in server/admin-service/internal/server/grpc.go
-- [ ] T023 [US1] Attach token persistence after successful login in web/src/pages/user/login/index.tsx
-- [ ] T024 [US1] Attach Authorization request interceptor in web/src/requestErrorConfig.ts
-- [ ] T025 [US1] Update login service call path or wrapper usage in web/src/services/ant-design-pro/api.ts
-- [ ] T026 [US1] Verify administrator login manually using specs/001-min-login-integration/quickstart.md
+- [x] T018 [US1] Implement Login usecase behavior in server/admin-service/internal/biz/auth.go
+- [x] T019 [US1] Implement seeded admin credential verification in server/admin-service/internal/data/auth.go
+- [x] T020 [US1] Implement Login transport method in server/admin-service/internal/service/auth.go
+- [x] T021 [US1] Register AuthService HTTP endpoint in server/admin-service/internal/server/http.go
+- [x] T022 [US1] Register AuthService gRPC endpoint in server/admin-service/internal/server/grpc.go
+- [x] T023 [US1] Attach token persistence after successful login in web/src/pages/user/login/index.tsx
+- [x] T024 [US1] Attach Authorization request interceptor in web/src/requestErrorConfig.ts
+- [x] T025 [US1] Update login service call path or wrapper usage in web/src/services/ant-design-pro/api.ts
+- [x] T026 [US1] Verify administrator login manually using specs/001-min-login-integration/quickstart.md
 
 **Checkpoint**: User Story 1 works independently. Invalid credentials stay on login; valid admin reaches the workspace.
 
@@ -81,14 +81,14 @@ implementation and testing of each story.
 
 ### Implementation for User Story 2
 
-- [ ] T027 [US2] Implement CurrentUser usecase behavior in server/admin-service/internal/biz/auth.go
-- [ ] T028 [US2] Implement token lookup and disabled-user checks in server/admin-service/internal/data/auth.go
-- [ ] T029 [US2] Implement CurrentUser transport method in server/admin-service/internal/service/auth.go
-- [ ] T030 [US2] Map backend current user payload to Ant Design Pro CurrentUser shape in web/src/services/admin/auth.ts
-- [ ] T031 [US2] Update getInitialState current-user loading in web/src/app.tsx
-- [ ] T032 [US2] Update access rules for admin and non-admin users in web/src/access.ts
-- [ ] T033 [US2] Add 401 auth-state clearing and login redirect behavior in web/src/requestErrorConfig.ts
-- [ ] T034 [US2] Verify seeded admin and non-admin menu visibility using specs/001-min-login-integration/quickstart.md
+- [x] T027 [US2] Implement CurrentUser usecase behavior in server/admin-service/internal/biz/auth.go
+- [x] T028 [US2] Implement token lookup and disabled-user checks in server/admin-service/internal/data/auth.go
+- [x] T029 [US2] Implement CurrentUser transport method in server/admin-service/internal/service/auth.go
+- [x] T030 [US2] Map backend current user payload to Ant Design Pro CurrentUser shape in web/src/services/admin/auth.ts
+- [x] T031 [US2] Update getInitialState current-user loading in web/src/app.tsx
+- [x] T032 [US2] Update access rules for admin and non-admin users in web/src/access.ts
+- [x] T033 [US2] Add 401 auth-state clearing and login redirect behavior in web/src/requestErrorConfig.ts
+- [x] T034 [US2] Verify seeded admin and non-admin menu visibility using specs/001-min-login-integration/quickstart.md
 
 **Checkpoint**: Current user comes from Kratos, page refresh keeps valid access, and non-admin users cannot see admin-only menus.
 
@@ -102,11 +102,11 @@ implementation and testing of each story.
 
 ### Implementation for User Story 3
 
-- [ ] T035 [US3] Document local Higress frontend route setup in gateway/README.md
-- [ ] T036 [US3] Document local Higress /api route setup in gateway/README.md
-- [ ] T037 [US3] Add deploy note for integrated auth gateway flow in deploy/auth-gateway.local.md
-- [ ] T038 [US3] Configure or document preserving Authorization for /api traffic in gateway/README.md
-- [ ] T039 [US3] Verify integrated gateway flow using specs/001-min-login-integration/quickstart.md
+- [x] T035 [US3] Document local Higress frontend route setup in gateway/README.md
+- [x] T036 [US3] Document local Higress /api route setup in gateway/README.md
+- [x] T037 [US3] Add deploy note for integrated auth gateway flow in deploy/auth-gateway.local.md
+- [x] T038 [US3] Configure or document preserving Authorization for /api traffic in gateway/README.md
+- [x] T039 [US3] Verify integrated gateway flow using specs/001-min-login-integration/quickstart.md
 
 **Checkpoint**: Gateway entry loads the admin console and routes auth/current-user traffic to Kratos.
 
@@ -116,12 +116,12 @@ implementation and testing of each story.
 
 **Purpose**: Keep docs, generated artifacts, and checks aligned.
 
-- [ ] T040 [P] Update feature quickstart with final seeded credentials in specs/001-min-login-integration/quickstart.md
-- [ ] T041 [P] Update bootstrap runtime notes if ports or startup commands changed in specs/000-bootstrap/research.md
-- [ ] T042 Run backend verification commands from server/admin-service
-- [ ] T043 Run frontend verification commands with mock disabled from web
-- [ ] T044 Run integrated gateway verification from specs/001-min-login-integration/quickstart.md
-- [ ] T045 Review Git status and ensure generated/runtime artifacts remain ignored in .gitignore
+- [x] T040 [P] Update feature quickstart with final seeded credentials in specs/001-min-login-integration/quickstart.md
+- [x] T041 [P] Update bootstrap runtime notes if ports or startup commands changed in specs/000-bootstrap/research.md
+- [x] T042 Run backend verification commands from server/admin-service
+- [x] T043 Run frontend verification commands with mock disabled from web
+- [x] T044 Run integrated gateway verification from specs/001-min-login-integration/quickstart.md
+- [x] T045 Review Git status and ensure generated/runtime artifacts remain ignored in .gitignore
 
 ---
 

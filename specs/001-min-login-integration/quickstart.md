@@ -24,6 +24,27 @@ Expected:
 - Login with the seeded administrator returns a successful sign-in response.
 - Current-user request with the returned token returns the administrator profile.
 
+Seeded credentials:
+
+```text
+admin / ant.design
+user  / ant.design
+```
+
+Direct API smoke check:
+
+```powershell
+$body = '{"username":"admin","password":"ant.design","type":"account"}'
+$login = Invoke-RestMethod -Method Post `
+  -Uri http://localhost:18000/api/login/account `
+  -ContentType 'application/json' `
+  -Body $body
+
+Invoke-RestMethod -Method Get `
+  -Uri http://localhost:18000/api/currentUser `
+  -Headers @{ Authorization = "Bearer $($login.token)" }
+```
+
 ## Independent Frontend Check
 
 ```powershell
@@ -58,7 +79,8 @@ Expected:
 1. Start Kratos backend.
 2. Start Ant Design Pro frontend.
 3. Start Higress gateway.
-4. Configure or verify gateway routes from `contracts/gateway-routes.md`.
+4. Configure or verify gateway routes from `contracts/gateway-routes.md`,
+   `gateway/README.md`, and `deploy/auth-gateway.local.md`.
 5. Open `http://localhost:18080`.
 6. Sign in as the seeded administrator.
 7. Confirm the authenticated workspace appears.
@@ -70,8 +92,7 @@ Expected:
 
 ## Expected Seed Users
 
-The implementation phase should document the final seed credentials here after
-they are created. Proposed local defaults:
+The local seeded users are:
 
 ```text
 admin / ant.design
@@ -85,6 +106,8 @@ as production secrets.
 
 - If `/api/currentUser` returns unauthorized, confirm the browser stored token
   and the gateway preserves the `Authorization` header.
+- If the gateway returns 503, confirm Higress all-in-one uses static service
+  sources such as `template-v6-api.static:80` and `template-v6-web.static:80`.
 - If the login page loads only on `8000`, confirm the gateway frontend route.
 - If API calls work only on `18000`, confirm the gateway `/api/*` route.
 - If Ant Design Pro still shows mock users, run `npm run start:no-mock` and

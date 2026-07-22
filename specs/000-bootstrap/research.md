@@ -65,10 +65,13 @@ This spike validates that the framework modules can run independently before SDD
 - Verification:
   - `go test ./...` passed.
   - `POST /v1/todos/create` returned a created Todo JSON payload.
+  - `POST /api/login/account` and authenticated `GET /api/currentUser` are
+    available after `specs/001-min-login-integration`.
 - Notes:
   - Default template ports `8000` and `9000` were changed to `18000` and `19000` to avoid conflicting with Ant Design Pro.
   - `buf` and `wire` were installed for code generation.
-  - The template includes Todo sample code by default; no project-specific business logic has been added yet.
+  - The template includes Todo sample code by default.
+  - Auth login/current-user is the first project-specific SDD feature.
   - `protoc` is not installed globally; generation is handled through `buf`.
 
 ## Resource Notes

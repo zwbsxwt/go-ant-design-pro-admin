@@ -1,7 +1,8 @@
 ﻿import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
-import { getIntl } from '@umijs/max';
+import { getIntl, history } from '@umijs/max';
 import { message, notification } from 'antd';
+import { clearAuthState, getAuthToken } from '@/utils/authState';
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -13,7 +14,7 @@ enum ErrorShowType {
 }
 // 与后端约定的响应数据格式
 interface ResponseStructure {
-  success: boolean;
+  success?: boolean;
   data: unknown;
   errorCode?: number;
   errorMessage?: string;
@@ -32,7 +33,7 @@ export const errorConfig: RequestConfig = {
     errorThrower: (res) => {
       const { success, data, errorCode, errorMessage, showType } =
         res as unknown as ResponseStructure;
-      if (!success) {
+      if (success === false) {
         const error: any = new Error(errorMessage);
         error.name = 'BizError';
         error.info = { errorCode, errorMessage, showType, data };
@@ -73,7 +74,15 @@ export const errorConfig: RequestConfig = {
       } else if (error.response) {
         // Axios 的错误
         // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-        message.error(`Response status:${error.response.status}`);
+        if (error.response.status === 401) {
+          clearAuthState();
+          if (history.location.pathname !== '/user/login') {
+            message.warning('登录已失效，请重新登录');
+            history.replace('/user/login');
+          }
+        } else {
+          message.error(`Response status:${error.response.status}`);
+        }
       } else if (typeof navigator !== 'undefined' && !navigator.onLine) {
         message.error(
           getIntl().formatMessage({
@@ -93,12 +102,10 @@ export const errorConfig: RequestConfig = {
   // 请求拦截器
   requestInterceptors: [
     (config: RequestOptions) => {
-      // 拦截请求配置，进行个性化处理。
-      // 示例：为请求附加 token（按需启用）
-      // const token = localStorage.getItem('token');
-      // if (token) {
-      //   config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
-      // }
+      const token = getAuthToken();
+      if (token) {
+        config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
+      }
       return config;
     },
   ],

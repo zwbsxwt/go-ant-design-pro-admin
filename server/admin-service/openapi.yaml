@@ -3,13 +3,60 @@
 
 openapi: 3.0.3
 info:
-    title: TodoService API
-    description: |-
-        TodoService provides a simple CRUD example for managing todo items.
-         It demonstrates unary, server-streaming, and bidirectional-streaming RPCs
-         together with AIP-style list filtering, ordering, and pagination.
+    title: ""
     version: 0.0.1
 paths:
+    /api/currentUser:
+        get:
+            tags:
+                - AuthService
+            description: CurrentUser returns the signed-in user for the bearer token.
+            operationId: AuthService_CurrentUser
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.CurrentUserReply'
+    /api/login/account:
+        post:
+            tags:
+                - AuthService
+            description: Login authenticates a user with username and password.
+            operationId: AuthService_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/auth.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.LoginReply'
+    /api/login/outLogin:
+        post:
+            tags:
+                - AuthService
+            description: OutLogin accepts a logout request.
+            operationId: AuthService_OutLogin
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/auth.v1.OutLoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.OutLoginReply'
     /v1/todos/create:
         post:
             tags:
@@ -226,6 +273,70 @@ paths:
                     content: {}
 components:
     schemas:
+        auth.v1.CurrentUser:
+            type: object
+            properties:
+                userid:
+                    type: string
+                name:
+                    type: string
+                username:
+                    type: string
+                avatar:
+                    type: string
+                access:
+                    type: string
+                role:
+                    type: string
+                status:
+                    type: string
+                menuPermissions:
+                    type: array
+                    items:
+                        type: string
+        auth.v1.CurrentUserReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/auth.v1.CurrentUser'
+        auth.v1.LoginReply:
+            type: object
+            properties:
+                status:
+                    type: string
+                type:
+                    type: string
+                currentAuthority:
+                    type: string
+                token:
+                    type: string
+                expiresAt:
+                    type: string
+                    format: date-time
+                errorMessage:
+                    type: string
+        auth.v1.LoginRequest:
+            required:
+                - username
+                - password
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+                autoLogin:
+                    type: boolean
+                type:
+                    type: string
+        auth.v1.OutLoginReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        auth.v1.OutLoginRequest:
+            type: object
+            properties: {}
         todo.v1.SyncTodoRequest:
             type: object
             properties:
@@ -306,4 +417,10 @@ components:
                          Empty when there are no more results.
             description: TodoSet is a paginated collection of todo items returned by ListTodos.
 tags:
+    - name: AuthService
+      description: AuthService provides the first admin sign-in integration endpoints.
     - name: TodoService
+      description: |-
+        TodoService provides a simple CRUD example for managing todo items.
+         It demonstrates unary, server-streaming, and bidirectional-streaming RPCs
+         together with AIP-style list filtering, ordering, and pagination.

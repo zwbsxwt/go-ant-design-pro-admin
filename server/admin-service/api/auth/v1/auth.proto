@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package auth.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "template-v6/server/admin-service/api/auth/v1;v1";
+option java_multiple_files = true;
+option java_package = "auth.v1";
+option objc_class_prefix = "APIAuthV1";
+
+// AuthService provides the first admin sign-in integration endpoints.
+service AuthService {
+  // Login authenticates a user with username and password.
+  rpc Login(LoginRequest) returns (LoginReply) {
+    option (google.api.http) = {
+      post: "/api/login/account"
+      body: "*"
+    };
+  }
+
+  // CurrentUser returns the signed-in user for the bearer token.
+  rpc CurrentUser(CurrentUserRequest) returns (CurrentUserReply) {
+    option (google.api.http) = {
+      get: "/api/currentUser"
+    };
+  }
+
+  // OutLogin accepts a logout request.
+  rpc OutLogin(OutLoginRequest) returns (OutLoginReply) {
+    option (google.api.http) = {
+      post: "/api/login/outLogin"
+      body: "*"
+    };
+  }
+}
+
+message LoginRequest {
+  string username = 1 [(google.api.field_behavior) = REQUIRED];
+  string password = 2 [(google.api.field_behavior) = REQUIRED];
+  bool auto_login = 3;
+  string type = 4;
+}
+
+message LoginReply {
+  string status = 1;
+  string type = 2;
+  string current_authority = 3;
+  string token = 4;
+  google.protobuf.Timestamp expires_at = 5;
+  string error_message = 6;
+}
+
+message CurrentUserRequest {}
+
+message CurrentUserReply {
+  CurrentUser data = 1;
+}
+
+message CurrentUser {
+  string userid = 1;
+  string name = 2;
+  string username = 3;
+  string avatar = 4;
+  string access = 5;
+  string role = 6;
+  string status = 7;
+  repeated string menu_permissions = 8;
+}
+
+message OutLoginRequest {}
+
+message OutLoginReply {
+  bool success = 1;
+}

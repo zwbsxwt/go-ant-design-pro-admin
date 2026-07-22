@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package auth.v1;
+
+option go_package = "template-v6/server/admin-service/api/auth/v1;v1";
+option java_multiple_files = true;
+option java_package = "auth.v1";
+option objc_class_prefix = "APIAuthV1";
+
+enum ErrorReason {
+  AUTH_UNSPECIFIED = 0;
+  AUTH_INVALID_CREDENTIALS = 1;
+  AUTH_DISABLED_USER = 2;
+  AUTH_MISSING_TOKEN = 3;
+  AUTH_INVALID_TOKEN = 4;
+}

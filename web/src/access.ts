@@ -6,6 +6,9 @@ export default function access(
 ) {
   const { currentUser } = initialState ?? {};
   return {
-    canAdmin: currentUser && currentUser.access === 'admin',
+    canAdmin:
+      currentUser?.access === 'admin' ||
+      currentUser?.menuPermissions?.includes('menu.admin') ||
+      false,
   };
 }
