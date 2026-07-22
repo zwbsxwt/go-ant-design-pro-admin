@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package system.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "template-v6/server/admin-service/api/system/v1;v1";
+option java_multiple_files = true;
+option java_package = "system.v1";
+option objc_class_prefix = "APISystemV1";
+
+service MenuService {
+  rpc ListMenus(ListMenusRequest) returns (ListMenusReply) {
+    option (google.api.http) = {
+      get: "/api/system/menus"
+    };
+  }
+
+  rpc GetMenu(GetMenuRequest) returns (Menu) {
+    option (google.api.http) = {
+      get: "/api/system/menus/{id}"
+    };
+  }
+
+  rpc CreateMenu(CreateMenuRequest) returns (Menu) {
+    option (google.api.http) = {
+      post: "/api/system/menus"
+      body: "*"
+    };
+  }
+
+  rpc UpdateMenu(UpdateMenuRequest) returns (Menu) {
+    option (google.api.http) = {
+      put: "/api/system/menus/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteMenu(DeleteMenuRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/system/menus/{id}"
+    };
+  }
+}
+
+message Menu {
+  string id = 1;
+  string parent_id = 2;
+  string type = 3;
+  string name = 4;
+  string path = 5;
+  string component = 6;
+  string permission_code = 7;
+  string icon = 8;
+  int32 sort = 9;
+  string status = 10;
+  repeated Menu children = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+}
+
+message ListMenusRequest {}
+
+message ListMenusReply {
+  repeated Menu data = 1;
+}
+
+message CreateMenuRequest {
+  string parent_id = 1;
+  string type = 2 [(google.api.field_behavior) = REQUIRED];
+  string name = 3 [(google.api.field_behavior) = REQUIRED];
+  string path = 4;
+  string component = 5;
+  string permission_code = 6 [(google.api.field_behavior) = REQUIRED];
+  string icon = 7;
+  int32 sort = 8;
+  string status = 9;
+}
+
+message GetMenuRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateMenuRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+  string parent_id = 2;
+  string type = 3 [(google.api.field_behavior) = REQUIRED];
+  string name = 4 [(google.api.field_behavior) = REQUIRED];
+  string path = 5;
+  string component = 6;
+  string permission_code = 7 [(google.api.field_behavior) = REQUIRED];
+  string icon = 8;
+  int32 sort = 9;
+  string status = 10;
+}
+
+message DeleteMenuRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}

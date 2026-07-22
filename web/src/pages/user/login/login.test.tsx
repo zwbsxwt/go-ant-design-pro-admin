@@ -31,7 +31,7 @@ describe('Login Page', () => {
       />,
     );
 
-    await rootContainer.findAllByText('Ant Design');
+    await rootContainer.findAllByText('go-ant-design-pro-admin');
 
     act(() => {
       historyRef.current?.push('/user/login');
@@ -41,7 +41,7 @@ describe('Login Page', () => {
       rootContainer.baseElement?.querySelector('.ant-pro-form-login-desc')
         ?.textContent,
     ).toBe(
-      'Ant Design is the most influential web design specification in Xihu district',
+      'go-ant-design-pro-admin admin framework template',
     );
 
     expect(rootContainer.asFragment()).toMatchSnapshot();
@@ -60,7 +60,7 @@ describe('Login Page', () => {
       />,
     );
 
-    await rootContainer.findAllByText('Ant Design');
+    await rootContainer.findAllByText('go-ant-design-pro-admin');
 
     const userNameInput = await rootContainer.findByPlaceholderText(
       'Username: admin or user',
@@ -81,7 +81,7 @@ describe('Login Page', () => {
     await (await rootContainer.findByText('Login')).click();
 
     // Wait for login to succeed and navigate to home page
-    await rootContainer.findByText(/Ant Design Pro/, undefined, {
+    await rootContainer.findByText(/go-ant-design-pro-admin/, undefined, {
       timeout: 10000,
     });
 

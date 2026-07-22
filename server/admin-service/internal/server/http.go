@@ -5,6 +5,7 @@ import (
 	"github.com/go-kratos/kratos/v3/middleware/validate"
 	"github.com/go-kratos/kratos/v3/transport/http"
 	authv1 "template-v6/server/admin-service/api/auth/v1"
+	systemv1 "template-v6/server/admin-service/api/system/v1"
 	v1 "template-v6/server/admin-service/api/todo/v1"
 	"template-v6/server/admin-service/internal/conf"
 	"template-v6/server/admin-service/internal/service"
@@ -14,7 +15,7 @@ import (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, todo *service.TodoService, auth *service.AuthService) *http.Server {
+func NewHTTPServer(c *conf.Server, todo *service.TodoService, auth *service.AuthService, menu *service.MenuService, role *service.RoleService, user *service.UserService) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -40,5 +41,8 @@ func NewHTTPServer(c *conf.Server, todo *service.TodoService, auth *service.Auth
 	srv := http.NewServer(opts...)
 	v1.RegisterTodoServiceHTTPServer(srv, todo)
 	authv1.RegisterAuthServiceHTTPServer(srv, auth)
+	systemv1.RegisterMenuServiceHTTPServer(srv, menu)
+	systemv1.RegisterRoleServiceHTTPServer(srv, role)
+	systemv1.RegisterUserServiceHTTPServer(srv, user)
 	return srv
 }

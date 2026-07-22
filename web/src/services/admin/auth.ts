@@ -49,6 +49,8 @@ function normalizeCurrentUser(user?: API.CurrentUser) {
   const raw = user as API.CurrentUser & {
     userid?: string;
     menu_permissions?: string[];
+    button_permissions?: string[];
+    role_codes?: string[];
   };
   const normalized = { ...user };
   if (normalized.userid === undefined && raw.userid !== undefined) {
@@ -59,6 +61,15 @@ function normalizeCurrentUser(user?: API.CurrentUser) {
     raw.menu_permissions !== undefined
   ) {
     normalized.menuPermissions = raw.menu_permissions;
+  }
+  if (
+    normalized.buttonPermissions === undefined &&
+    raw.button_permissions !== undefined
+  ) {
+    normalized.buttonPermissions = raw.button_permissions;
+  }
+  if (normalized.roleCodes === undefined && raw.role_codes !== undefined) {
+    normalized.roleCodes = raw.role_codes;
   }
   return normalized;
 }

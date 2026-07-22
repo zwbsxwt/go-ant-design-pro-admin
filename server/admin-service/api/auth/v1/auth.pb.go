@@ -256,17 +256,19 @@ func (x *CurrentUserReply) GetData() *CurrentUser {
 }
 
 type CurrentUser struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	Userid          string                 `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty"`
-	Name            string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Username        string                 `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
-	Avatar          string                 `protobuf:"bytes,4,opt,name=avatar,proto3" json:"avatar,omitempty"`
-	Access          string                 `protobuf:"bytes,5,opt,name=access,proto3" json:"access,omitempty"`
-	Role            string                 `protobuf:"bytes,6,opt,name=role,proto3" json:"role,omitempty"`
-	Status          string                 `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"`
-	MenuPermissions []string               `protobuf:"bytes,8,rep,name=menu_permissions,json=menuPermissions,proto3" json:"menu_permissions,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Userid            string                 `protobuf:"bytes,1,opt,name=userid,proto3" json:"userid,omitempty"`
+	Name              string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Username          string                 `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
+	Avatar            string                 `protobuf:"bytes,4,opt,name=avatar,proto3" json:"avatar,omitempty"`
+	Access            string                 `protobuf:"bytes,5,opt,name=access,proto3" json:"access,omitempty"`
+	Role              string                 `protobuf:"bytes,6,opt,name=role,proto3" json:"role,omitempty"`
+	Status            string                 `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"`
+	MenuPermissions   []string               `protobuf:"bytes,8,rep,name=menu_permissions,json=menuPermissions,proto3" json:"menu_permissions,omitempty"`
+	ButtonPermissions []string               `protobuf:"bytes,9,rep,name=button_permissions,json=buttonPermissions,proto3" json:"button_permissions,omitempty"`
+	RoleCodes         []string               `protobuf:"bytes,10,rep,name=role_codes,json=roleCodes,proto3" json:"role_codes,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *CurrentUser) Reset() {
@@ -351,6 +353,20 @@ func (x *CurrentUser) GetStatus() string {
 func (x *CurrentUser) GetMenuPermissions() []string {
 	if x != nil {
 		return x.MenuPermissions
+	}
+	return nil
+}
+
+func (x *CurrentUser) GetButtonPermissions() []string {
+	if x != nil {
+		return x.ButtonPermissions
+	}
+	return nil
+}
+
+func (x *CurrentUser) GetRoleCodes() []string {
+	if x != nil {
+		return x.RoleCodes
 	}
 	return nil
 }
@@ -457,7 +473,7 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\rerror_message\x18\x06 \x01(\tR\ferrorMessage\"\x14\n" +
 	"\x12CurrentUserRequest\"<\n" +
 	"\x10CurrentUserReply\x12(\n" +
-	"\x04data\x18\x01 \x01(\v2\x14.auth.v1.CurrentUserR\x04data\"\xdc\x01\n" +
+	"\x04data\x18\x01 \x01(\v2\x14.auth.v1.CurrentUserR\x04data\"\xaa\x02\n" +
 	"\vCurrentUser\x12\x16\n" +
 	"\x06userid\x18\x01 \x01(\tR\x06userid\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
@@ -466,7 +482,11 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\x06access\x18\x05 \x01(\tR\x06access\x12\x12\n" +
 	"\x04role\x18\x06 \x01(\tR\x04role\x12\x16\n" +
 	"\x06status\x18\a \x01(\tR\x06status\x12)\n" +
-	"\x10menu_permissions\x18\b \x03(\tR\x0fmenuPermissions\"\x11\n" +
+	"\x10menu_permissions\x18\b \x03(\tR\x0fmenuPermissions\x12-\n" +
+	"\x12button_permissions\x18\t \x03(\tR\x11buttonPermissions\x12\x1d\n" +
+	"\n" +
+	"role_codes\x18\n" +
+	" \x03(\tR\troleCodes\"\x11\n" +
 	"\x0fOutLoginRequest\")\n" +
 	"\rOutLoginReply\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess2\xa0\x02\n" +

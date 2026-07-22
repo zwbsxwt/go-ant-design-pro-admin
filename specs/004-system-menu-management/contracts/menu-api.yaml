@@ -1,0 +1,78 @@
+openapi: 3.0.3
+info:
+  title: System Menu Management API
+  version: 1.0.0
+paths:
+  /api/system/menus:
+    get:
+      summary: List menu permission tree
+      responses:
+        "200":
+          description: Menu tree returned
+    post:
+      summary: Create menu permission node
+      responses:
+        "200":
+          description: Menu node created
+  /api/system/menus/{id}:
+    get:
+      summary: Get menu permission node
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Menu node returned
+    put:
+      summary: Update menu permission node
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Menu node updated
+    delete:
+      summary: Delete menu permission node
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Menu node deleted
+components:
+  schemas:
+    Menu:
+      type: object
+      required: [id, type, name, permissionCode, sort, status]
+      properties:
+        id:
+          type: string
+        parentId:
+          type: string
+        type:
+          type: string
+          enum: [directory, page, button]
+        name:
+          type: string
+        path:
+          type: string
+        component:
+          type: string
+        permissionCode:
+          type: string
+        icon:
+          type: string
+        sort:
+          type: integer
+        status:
+          type: string
+          enum: [enabled, disabled]

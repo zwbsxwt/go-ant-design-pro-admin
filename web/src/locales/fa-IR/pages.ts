@@ -1,6 +1,6 @@
 export default {
   'pages.layouts.userLayout.title':
-    'طراحی مورچه تأثیرگذارترین مشخصات طراحی وب در منطقه Xihu است',
+    'go-ant-design-pro-admin admin framework template',
   'pages.login.accountLogin.tab': 'ورود به حساب کاربری',
   'pages.login.accountLogin.errorMessage':
     'نام کاربری / رمزعبور نادرست (مدیر / ant.design)',
@@ -26,7 +26,8 @@ export default {
   'pages.login.loginWith': 'وارد شوید با :',
   'pages.login.registerAccount': 'ثبت نام',
   'pages.welcome.link': 'خوش آمدید',
-  'pages.welcome.celebrationTitle': 'به Ant Design Pro {v6} خوش آمدید',
+  'pages.welcome.celebrationTitle':
+    'به go-ant-design-pro-admin {v6} خوش آمدید',
   'pages.welcome.alertMessage': 'اجزای سنگین تر سریعتر و قوی تر آزاد شده اند.',
   'pages.404.subTitle': 'ببخشيد، صفحه اي که ديديد وجود نداره',
   'pages.404.buttonText': 'بازگشت به صفحه اصلی',

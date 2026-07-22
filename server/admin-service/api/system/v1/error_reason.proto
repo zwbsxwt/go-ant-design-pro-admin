@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package system.v1;
+
+option go_package = "template-v6/server/admin-service/api/system/v1;v1";
+option java_multiple_files = true;
+option java_package = "system.v1";
+option objc_class_prefix = "APISystemV1";
+
+enum ErrorReason {
+  SYSTEM_UNSPECIFIED = 0;
+  SYSTEM_UNAUTHORIZED = 1;
+  MENU_NOT_FOUND = 2;
+  MENU_DUPLICATE_PERMISSION_CODE = 3;
+  MENU_INVALID_PARENT = 4;
+  MENU_HAS_CHILDREN = 5;
+  MENU_HAS_ROLE_BINDINGS = 6;
+  MENU_INVALID_TYPE = 7;
+  ROLE_NOT_FOUND = 8;
+  ROLE_DUPLICATE_CODE = 9;
+  ROLE_HAS_USERS = 10;
+  ROLE_INVALID_ARGUMENT = 11;
+  USER_NOT_FOUND = 12;
+  USER_DUPLICATE_USERNAME = 13;
+  USER_INVALID_ARGUMENT = 14;
+  USER_CANNOT_DELETE_SELF = 15;
+}

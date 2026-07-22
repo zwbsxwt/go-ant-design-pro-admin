@@ -1,0 +1,33 @@
+.git/
+.gitignore
+.dockerignore
+
+# Node / frontend
+node_modules/
+web/node_modules/
+web/dist/
+web/.umi/
+web/.umi-production/
+web/.cache/
+web/.mfsu/
+web/types/cache/
+
+# Go / Kratos
+server/**/bin/
+server/**/tmp/
+server/**/server.log
+server/**/server.err.log
+
+# Local upstream/runtime artifacts
+gateway/higress-main/
+gateway/higress-runtime/
+prometheus/data/
+
+# Local configuration and logs
+.env
+**/.env
+.env.local
+.env.*.local
+*.log
+*.err.log
+coverage/

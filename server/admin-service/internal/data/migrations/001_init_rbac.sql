@@ -1,0 +1,65 @@
+CREATE TABLE IF NOT EXISTS system_users (
+  id VARCHAR(36) PRIMARY KEY,
+  username VARCHAR(64) NOT NULL UNIQUE,
+  display_name VARCHAR(128) NOT NULL,
+  password_hash VARCHAR(128) NOT NULL,
+  avatar VARCHAR(512) NULL,
+  email VARCHAR(255) NULL,
+  phone VARCHAR(32) NULL,
+  status VARCHAR(16) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS system_roles (
+  id VARCHAR(36) PRIMARY KEY,
+  code VARCHAR(64) NOT NULL UNIQUE,
+  name VARCHAR(128) NOT NULL,
+  description VARCHAR(512) NULL,
+  status VARCHAR(16) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS system_menus (
+  id VARCHAR(36) PRIMARY KEY,
+  parent_id VARCHAR(36) NULL,
+  type VARCHAR(16) NOT NULL,
+  name VARCHAR(128) NOT NULL,
+  path VARCHAR(255) NULL,
+  component VARCHAR(255) NULL,
+  permission_code VARCHAR(128) NOT NULL UNIQUE,
+  icon VARCHAR(64) NULL,
+  sort INT NOT NULL DEFAULT 0,
+  status VARCHAR(16) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_system_menus_parent_sort (parent_id, sort),
+  CONSTRAINT fk_system_menus_parent
+    FOREIGN KEY (parent_id) REFERENCES system_menus(id)
+    ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS system_user_roles (
+  user_id VARCHAR(36) NOT NULL,
+  role_id VARCHAR(36) NOT NULL,
+  PRIMARY KEY (user_id, role_id),
+  CONSTRAINT fk_system_user_roles_user
+    FOREIGN KEY (user_id) REFERENCES system_users(id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_system_user_roles_role
+    FOREIGN KEY (role_id) REFERENCES system_roles(id)
+    ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS system_role_menus (
+  role_id VARCHAR(36) NOT NULL,
+  menu_id VARCHAR(36) NOT NULL,
+  PRIMARY KEY (role_id, menu_id),
+  CONSTRAINT fk_system_role_menus_role
+    FOREIGN KEY (role_id) REFERENCES system_roles(id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_system_role_menus_menu
+    FOREIGN KEY (menu_id) REFERENCES system_menus(id)
+    ON DELETE RESTRICT
+);

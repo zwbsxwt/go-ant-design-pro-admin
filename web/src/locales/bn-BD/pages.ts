@@ -1,6 +1,6 @@
 export default {
   'pages.layouts.userLayout.title':
-    'পিঁপড়া ডিজাইন হচ্ছে সিহু জেলার সবচেয়ে প্রভাবশালী ওয়েব ডিজাইনের স্পেসিফিকেশন',
+    'go-ant-design-pro-admin admin framework template',
   'pages.login.accountLogin.tab': 'অ্যাকাউন্টে লগইন',
   'pages.login.accountLogin.errorMessage':
     'ভুল ব্যবহারকারীর নাম/পাসওয়ার্ড(admin/ant.design)',
@@ -25,7 +25,8 @@ export default {
   'pages.login.loginWith': 'লগইন করতে পারেন:',
   'pages.login.registerAccount': 'অ্যাকাউন্ট নিবন্ধন করুন',
   'pages.welcome.link': 'স্বাগতম',
-  'pages.welcome.celebrationTitle': 'Ant Design Pro {v6} এ স্বাগতম',
+  'pages.welcome.celebrationTitle':
+    'go-ant-design-pro-admin {v6} এ স্বাগতম',
   'pages.welcome.alertMessage': 'দ্রুত এবং শক্তিশালী ভারী শুল্ক উপাদান প্রকাশ করা হয়েছে।',
   'pages.404.subTitle': 'দুঃখিত, আপনি যে পৃষ্ঠাটি দেখতে চান তা বিদ্যমান নেই।',
   'pages.404.buttonText': 'প্রধান পাতায় ফিরে যান',

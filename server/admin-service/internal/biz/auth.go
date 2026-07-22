@@ -23,13 +23,15 @@ var (
 
 // AuthUser is the signed-in admin user model.
 type AuthUser struct {
-	ID              string
-	Username        string
-	DisplayName     string
-	Role            string
-	Status          string
-	Avatar          string
-	MenuPermissions []string
+	ID                string
+	Username          string
+	DisplayName       string
+	Role              string
+	RoleCodes         []string
+	Status            string
+	Avatar            string
+	MenuPermissions   []string
+	ButtonPermissions []string
 }
 
 // LoginResult is the result of a successful login.

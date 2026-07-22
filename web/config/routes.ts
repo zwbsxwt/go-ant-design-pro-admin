@@ -42,6 +42,36 @@ export default [
     ],
   },
   {
+    path: '/system',
+    name: 'system',
+    icon: 'setting',
+    access: 'canManageSystem',
+    routes: [
+      {
+        path: '/system',
+        redirect: '/system/menu',
+      },
+      {
+        path: '/system/menu',
+        name: 'menu',
+        component: './System/Menu',
+        access: 'canManageMenus',
+      },
+      {
+        path: '/system/role',
+        name: 'role',
+        component: './System/Role',
+        access: 'canManageRoles',
+      },
+      {
+        path: '/system/user',
+        name: 'user',
+        component: './System/User',
+        access: 'canManageUsers',
+      },
+    ],
+  },
+  {
     path: '/',
     redirect: '/welcome',
   },

@@ -1,0 +1,83 @@
+openapi: 3.0.3
+info:
+  title: System Role Management API
+  version: 1.0.0
+paths:
+  /api/system/roles:
+    get:
+      summary: List roles
+      responses:
+        "200":
+          description: Roles returned
+    post:
+      summary: Create role
+      responses:
+        "200":
+          description: Role created
+  /api/system/roles/{id}:
+    get:
+      summary: Get role
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Role returned
+    put:
+      summary: Update role
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Role updated
+    delete:
+      summary: Delete role
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Role deleted
+  /api/system/roles/{id}/permissions:
+    put:
+      summary: Replace role menu and button permissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Role permissions updated
+components:
+  schemas:
+    Role:
+      type: object
+      required: [id, code, name, status]
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [enabled, disabled]
+        permissionIds:
+          type: array
+          items:
+            type: string

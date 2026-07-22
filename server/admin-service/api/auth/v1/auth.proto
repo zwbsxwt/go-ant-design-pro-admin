@@ -68,6 +68,8 @@ message CurrentUser {
   string role = 6;
   string status = 7;
   repeated string menu_permissions = 8;
+  repeated string button_permissions = 9;
+  repeated string role_codes = 10;
 }
 
 message OutLoginRequest {}

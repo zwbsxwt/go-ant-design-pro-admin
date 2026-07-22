@@ -1,0 +1,99 @@
+openapi: 3.0.3
+info:
+  title: System User Management API
+  version: 1.0.0
+paths:
+  /api/system/users:
+    get:
+      summary: List users
+      responses:
+        "200":
+          description: Users returned
+    post:
+      summary: Create user
+      responses:
+        "200":
+          description: User created
+  /api/system/users/{id}:
+    get:
+      summary: Get user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User returned
+    put:
+      summary: Update user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User updated
+    delete:
+      summary: Delete user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User deleted
+  /api/system/users/{id}/password:
+    put:
+      summary: Reset user password
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Password reset
+  /api/system/users/{id}/roles:
+    put:
+      summary: Replace user role bindings
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User roles updated
+components:
+  schemas:
+    User:
+      type: object
+      required: [id, username, displayName, status]
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        displayName:
+          type: string
+        avatar:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        status:
+          type: string
+          enum: [enabled, disabled]
+        roleIds:
+          type: array
+          items:
+            type: string

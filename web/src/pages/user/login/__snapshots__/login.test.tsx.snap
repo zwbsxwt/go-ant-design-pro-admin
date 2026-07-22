@@ -62,13 +62,13 @@ exports[`Login Page should login success 1`] = `
               <span
                 class="ant-pro-form-login-title"
               >
-                Ant Design
+                go-ant-design-pro-admin
               </span>
             </div>
             <div
               class="ant-pro-form-login-desc"
             >
-              Ant Design is the most influential web design specification in Xihu district
+              go-ant-design-pro-admin admin framework template
             </div>
           </div>
           <div
@@ -469,7 +469,7 @@ exports[`Login Page should login success 1`] = `
         <div
           class="acss-1iouf57"
         >
-          Ant Design Pro © 2026
+          go-ant-design-pro-admin © 2026
         </div>
         <div
           class="acss-1f94i0u"
@@ -634,13 +634,13 @@ exports[`Login Page should show login form 1`] = `
               <span
                 class="ant-pro-form-login-title"
               >
-                Ant Design
+                go-ant-design-pro-admin
               </span>
             </div>
             <div
               class="ant-pro-form-login-desc"
             >
-              Ant Design is the most influential web design specification in Xihu district
+              go-ant-design-pro-admin admin framework template
             </div>
           </div>
           <div
@@ -1040,7 +1040,7 @@ exports[`Login Page should show login form 1`] = `
         <div
           class="acss-1iouf57"
         >
-          Ant Design Pro © 2026
+          go-ant-design-pro-admin © 2026
         </div>
         <div
           class="acss-1f94i0u"

@@ -96,13 +96,15 @@ func convertCurrentUser(user *biz.AuthUser) *v1.CurrentUser {
 		return nil
 	}
 	return &v1.CurrentUser{
-		Userid:          user.ID,
-		Name:            user.DisplayName,
-		Username:        user.Username,
-		Avatar:          user.Avatar,
-		Access:          user.Role,
-		Role:            user.Role,
-		Status:          user.Status,
-		MenuPermissions: append([]string(nil), user.MenuPermissions...),
+		Userid:            user.ID,
+		Name:              user.DisplayName,
+		Username:          user.Username,
+		Avatar:            user.Avatar,
+		Access:            user.Role,
+		Role:              user.Role,
+		Status:            user.Status,
+		MenuPermissions:   append([]string(nil), user.MenuPermissions...),
+		ButtonPermissions: append([]string(nil), user.ButtonPermissions...),
+		RoleCodes:         append([]string(nil), user.RoleCodes...),
 	}
 }

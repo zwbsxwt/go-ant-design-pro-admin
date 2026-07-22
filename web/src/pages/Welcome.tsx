@@ -158,7 +158,7 @@ const Welcome: React.FC = () => {
           {intl.formatMessage(
             {
               id: 'pages.welcome.celebrationTitle',
-              defaultMessage: '欢迎使用 Ant Design Pro {v6}',
+              defaultMessage: '欢迎使用 go-ant-design-pro-admin {v6}',
             },
             {
               v6: (

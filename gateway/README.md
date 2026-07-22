@@ -17,6 +17,15 @@ Default local ports:
 
 Runtime files are written to `higress-runtime/` and are ignored by Git.
 
+The local compose file defaults `HIGRESS_GATEWAY_CONCURRENCY` to `2` to keep the
+all-in-one Envoy process stable on Docker Desktop memory budgets around 4 GiB.
+Override it only when the local Docker memory budget is comfortably higher:
+
+```powershell
+$env:HIGRESS_GATEWAY_CONCURRENCY=4
+docker compose up -d --force-recreate
+```
+
 ## Local Login Integration Routes
 
 Use these routes only when verifying the SDD feature

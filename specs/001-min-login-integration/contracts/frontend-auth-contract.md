@@ -28,6 +28,9 @@ The implementation should reuse the current Ant Design Pro auth surfaces:
 - `CurrentUser.access` continues to drive `access.canAdmin`.
 - `CurrentUser.menuPermissions` is stored for later menu expansion, but this
   first feature only requires menu-level admin visibility.
+- After `specs/005-system-role-management`, `CurrentUser.buttonPermissions` is
+  available for page action access, and role/menu/button permission values are
+  resolved from database role bindings.
 
 ## Request Behavior
 
@@ -45,6 +48,5 @@ The implementation should reuse the current Ant Design Pro auth surfaces:
 ## Out Of Scope
 
 - Dynamic backend-driven route generation.
-- Button-level permissions.
 - User management CRUD UI.
 - Replacing Ant Design Pro layout or login UI.

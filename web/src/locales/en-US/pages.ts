@@ -1,6 +1,6 @@
 export default {
   'pages.layouts.userLayout.title':
-    'Ant Design is the most influential web design specification in Xihu district',
+    'go-ant-design-pro-admin admin framework template',
   'pages.login.accountLogin.tab': 'Account Login',
   'pages.login.accountLogin.errorMessage':
     'Incorrect username/password(admin/ant.design)',
@@ -25,7 +25,7 @@ export default {
   'pages.login.loginWith': 'Login with :',
   'pages.login.registerAccount': 'Register Account',
   'pages.welcome.link': 'Welcome',
-  'pages.welcome.celebrationTitle': 'Welcome to Ant Design Pro {v6}',
+  'pages.welcome.celebrationTitle': 'Welcome to go-ant-design-pro-admin {v6}',
   'pages.welcome.alertMessage':
     'Faster and stronger heavy-duty components have been released.',
   'pages.welcome.infoCard.umi.title': 'Learn umi',

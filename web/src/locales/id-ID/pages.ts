@@ -1,6 +1,6 @@
 export default {
   'pages.layouts.userLayout.title':
-    'Ant Design adalah spesifikasi desain Web yang paling berpengaruh di Kabupaten Xihu',
+    'go-ant-design-pro-admin admin framework template',
   'pages.login.accountLogin.tab': 'Login dengan akun',
   'pages.login.accountLogin.errorMessage':
     'Nama pengguna dan kata sandi salah(admin/ant.design)',
@@ -25,7 +25,8 @@ export default {
   'pages.login.loginWith': 'Masuk dengan :',
   'pages.login.registerAccount': 'Daftar Akun',
   'pages.welcome.link': 'Selamat datang',
-  'pages.welcome.celebrationTitle': 'Selamat datang di Ant Design Pro {v6}',
+  'pages.welcome.celebrationTitle':
+    'Selamat datang di go-ant-design-pro-admin {v6}',
   'pages.welcome.alertMessage':
     'Komponen heavy-duty yang lebih cepat dan lebih kuat telah dirilis.',
   'pages.404.subTitle': 'Maaf, halaman yang Anda kunjungi tidak ada. ',

@@ -72,21 +72,51 @@ This spike validates that the framework modules can run independently before SDD
   - `POST /v1/todos/create` returned a created Todo JSON payload.
   - `POST /api/login/account` and authenticated `GET /api/currentUser` are
     available after `specs/001-min-login-integration`.
+  - `specs/006-system-user-management` direct-port smoke on temporary
+    `http://localhost:18005` passed for admin login, user list/create,
+    disable-login rejection, password reset, role binding, refreshed
+    current-user permissions, and normal-user 403.
 - Notes:
   - Default template ports `8000` and `9000` were changed to `18000` and `19000` to avoid conflicting with Ant Design Pro.
   - `buf` and `wire` were installed for code generation.
   - The template includes Todo sample code by default.
   - Auth login/current-user is the first project-specific SDD feature.
+  - User management extends `GET /api/currentUser` with role code, menu
+    permission, and button permission payloads.
   - `protoc` is not installed globally; generation is handled through `buf`.
+
+### MySQL
+
+- Directory: `deploy/`
+- Runtime: Docker Compose
+- Container: `go-ant-admin-mysql`
+- Port: `localhost:3306`
+- Database: `go_ant_design_pro_admin`
+- Local credentials: `root / root`
+- Status: local data dependency for system management features.
+
+### Redis
+
+- Directory: `deploy/`
+- Runtime: Docker Compose
+- Container: `go-ant-admin-redis`
+- Port: `localhost:6379`
+- Status: local cache/session dependency for system management features.
 
 ## Resource Notes
 
 - Observability stack is useful for local full-stack testing and larger deployments.
 - For small 4 GiB servers, Grafana and Prometheus should remain optional and not part of the default runtime.
+- Local full-stack template testing assumes Docker Desktop has an 8 GiB memory
+  budget when Higress, frontend, backend, MySQL, and Redis are running together.
 - Observed memory usage:
   - Grafana: about 483 MiB
   - Prometheus: about 36 MiB
   - Higress all-in-one: about 534 MiB
+- Higress all-in-one now sets `HIGRESS_GATEWAY_CONCURRENCY` default to `2`
+  through `gateway/docker-compose.yml` because the container's Envoy previously
+  exited after an OOM-style kill when the image defaulted to concurrency `16`
+  under a Docker memory limit of about 3.8 GiB.
 
 ## Next
 
