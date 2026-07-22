@@ -46,6 +46,17 @@ Spec Kit supports Codex skills integration during initialization:
 specify init --here --integration codex --integration-options="--skills"
 ```
 
+This repository was initialized successfully on Windows/Codex with:
+
+```powershell
+& "C:\Users\wentao\.local\bin\specify.exe" init --here --force --integration codex --integration-options="--skills" --script ps --ignore-agent-tools
+```
+
+Use `--ignore-agent-tools` in the Codex desktop environment when agent detection
+hangs after the "Specify Project Setup" panel. The project files are still
+generated correctly; the flag only skips checking whether the agent CLI is
+installed.
+
 Run initialization only after confirming with the user, because it writes project infrastructure such as `.specify/`, scripts, templates, and agent integration files.
 
 ## Spec Kit Concepts
@@ -70,6 +81,18 @@ Core commands after Spec Kit project initialization:
 ```
 
 In Codex skills mode, commands are exposed as `$speckit-*` skills rather than slash commands.
+
+Initialized project files:
+
+```text
+.specify/memory/constitution.md
+.specify/templates/
+.specify/scripts/powershell/
+.specify/workflows/speckit/
+.specify/init-options.json
+.specify/integration.json
+.agents/skills/speckit-*/SKILL.md
+```
 
 ## Initial Development
 
@@ -194,17 +217,17 @@ Use feature-numbered directories for real features. Keep contracts beside the fe
 Useful CLI checks:
 
 ```powershell
-specify --version
-specify check
-specify self check
-specify integration status
-specify integration list
+& "C:\Users\wentao\.local\bin\specify.exe" --version
+& "C:\Users\wentao\.local\bin\specify.exe" check
+& "C:\Users\wentao\.local\bin\specify.exe" self check
+& "C:\Users\wentao\.local\bin\specify.exe" integration status
+& "C:\Users\wentao\.local\bin\specify.exe" integration list
 ```
 
 Initialize in this repository only with confirmation:
 
 ```powershell
-specify init --here --integration codex --integration-options="--skills"
+& "C:\Users\wentao\.local\bin\specify.exe" init --here --force --integration codex --integration-options="--skills" --script ps --ignore-agent-tools
 ```
 
 If the current directory is not empty, `--force` may be required. Do not use `--force` without reviewing what will be written.
@@ -271,4 +294,3 @@ Bootstrap record:
 ```text
 Use $spec-kit-skill to record a lightweight bootstrap spike for a new optional module. Do not create a full feature spec unless behavior integration is required.
 ```
-

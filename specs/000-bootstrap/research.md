@@ -82,5 +82,6 @@ This spike validates that the framework modules can run independently before SDD
 
 ## Next
 
-- Bootstrap Kratos in `server/`.
-- Later, use Spec Kit for constitution and the first real integration feature: login, current user, menu permissions, and gateway routing.
+- Spec Kit initialized in Codex skills mode.
+- Project constitution established at `.specify/memory/constitution.md`.
+- Next full SDD feature: login, current user, menu permissions, and gateway routing.

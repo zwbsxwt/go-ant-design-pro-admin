@@ -30,6 +30,9 @@ Use a lightweight spike record when the work only validates whether a third-part
 
 - Monorepo modules: `gateway/`, `server/`, `web/`, `mcp/`, `prometheus/`, `grafana/`, `deploy/`, `docs/`, `specs/`.
 - Encoding: write docs, configs, and code as UTF-8.
+- Spec Kit project state: `.specify/`.
+- Codex Spec Kit skills: `.agents/skills/speckit-*/SKILL.md`.
+- Constitution: `.specify/memory/constitution.md`.
 - Bootstrap evidence: `specs/000-bootstrap/research.md`.
 - First full SDD feature should be the minimum integration loop: login, current user, menu permissions, and Higress routing between Ant Design Pro and Kratos.
 - Observability is optional and pluggable; do not make `prometheus/` or `grafana/` part of the default small-project runtime without an explicit spec decision.
