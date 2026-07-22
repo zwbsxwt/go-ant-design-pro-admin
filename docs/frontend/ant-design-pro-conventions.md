@@ -29,6 +29,19 @@ mock-only API surfaces from the full Ant Design Pro example app are not part of
 the framework template. Add new pages through SDD feature specs and real Kratos
 API contracts instead of restoring demo modules.
 
+## Design Language Source
+
+The local file `docs/frontend/design.md` is a downloaded copy of the official
+Ant Design `https://ant.design/design.md` document. It is the offline design
+language source for AI-assisted UI work in this repository.
+
+Before designing or implementing frontend UI, read `docs/frontend/design.md`
+alongside this convention file. Use it for Ant Design's visual language, default
+Light theme, component archetypes, spacing, typography, color roles, shape,
+motion, and token semantics. This convention file still governs project-specific
+engineering choices such as Ant Design Pro simple mode, generated API flow,
+permissions, and SDD boundaries.
+
 Do not add legacy Ant Design Pro v5 assumptions such as importing from `umi`,
 using separate `@ant-design/pro-table` packages, relying on Less as the primary
 style layer, or introducing `moment`.
@@ -109,6 +122,8 @@ shipping route, layout, generated API, or dependency changes.
 
 ## Official References
 
+- Local Ant Design design.md copy: `docs/frontend/design.md`
+- Official Ant Design design.md source: https://ant.design/design.md
 - Ant Design Pro releases: https://github.com/ant-design/ant-design-pro/releases
 - ProComponents docs: https://procomponents.ant.design/
 - Ant Design docs: https://ant.design/

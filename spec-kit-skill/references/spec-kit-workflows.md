@@ -106,6 +106,8 @@ Use this flow for new features or the first real integrated product capability.
    - Monorepo boundaries stay explicit.
    - Higress is gateway, Kratos is backend, Ant Design Pro is frontend.
    - Frontend work follows `docs/frontend/ant-design-pro-conventions.md`.
+   - Frontend UI design also reads local Ant Design design language from
+     `docs/frontend/design.md`.
    - Backend work follows `docs/backend/kratos-conventions.md`.
    - MCP is optional side capability, not core business coupling.
    - Prometheus/Grafana are optional observability modules.
@@ -132,6 +134,8 @@ Use this flow for new features or the first real integrated product capability.
    - Kratos HTTP/gRPC service contract.
    - Frontend request adapter and proxy strategy.
    - Ant Design Pro / ProComponents page and component choices.
+   - Ant Design visual language, Light theme, and token semantics from
+     `docs/frontend/design.md` when UI is in scope.
    - Kratos service/biz/data layer ownership and generation steps.
    - Auth/session/token choice.
    - Test and verification approach.

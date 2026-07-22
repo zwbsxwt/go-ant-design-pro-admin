@@ -34,6 +34,9 @@ Use a lightweight spike record when the work only validates whether a third-part
 - Codex Spec Kit skills: `.agents/skills/speckit-*/SKILL.md`.
 - Constitution: `.specify/memory/constitution.md`.
 - Frontend conventions: `docs/frontend/ant-design-pro-conventions.md`.
+- Frontend design language: `docs/frontend/design.md` local copy of Ant Design
+  `design.md`; read it for UI, page, component, theme token, and visual language
+  work.
 - Backend conventions: `docs/backend/kratos-conventions.md`.
 - Bootstrap evidence: `specs/000-bootstrap/research.md`.
 - First full SDD feature should be the minimum integration loop: login, current user, menu permissions, and Higress routing between Ant Design Pro and Kratos.
