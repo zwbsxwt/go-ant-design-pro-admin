@@ -1,5 +1,7 @@
 # go-ant-design-pro-admin
 
+English | [简体中文](README.zh-CN.md)
+
 SDD-driven admin framework template with Higress, Kratos, Ant Design Pro,
 MySQL, Redis, and optional observability modules.
 
