@@ -29,6 +29,8 @@ description: "Task list template for feature implementation"
 - **Deployment and docs**: `deploy/`, `docs/`
 - **Feature artifacts**: `specs/[###-feature-name]/`
 - Tasks MUST use real repository paths and MUST state the touched module.
+- Frontend tasks MUST follow `docs/frontend/ant-design-pro-conventions.md`.
+- Backend tasks MUST follow `docs/backend/kratos-conventions.md`.
 
 <!--
   ============================================================================

@@ -47,6 +47,8 @@
   out-of-scope modules.
 - Define API, route, auth, permission, and data contracts before wiring
   frontend/backend/gateway code together.
+- If `web/` is in scope, apply `docs/frontend/ant-design-pro-conventions.md`.
+- If `server/` is in scope, apply `docs/backend/kratos-conventions.md`.
 - Provide independent verification for each touched module and integrated
   verification for cross-module behavior.
 - Preserve UTF-8 for all generated and edited text files.

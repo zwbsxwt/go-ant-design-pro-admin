@@ -33,6 +33,8 @@ Use a lightweight spike record when the work only validates whether a third-part
 - Spec Kit project state: `.specify/`.
 - Codex Spec Kit skills: `.agents/skills/speckit-*/SKILL.md`.
 - Constitution: `.specify/memory/constitution.md`.
+- Frontend conventions: `docs/frontend/ant-design-pro-conventions.md`.
+- Backend conventions: `docs/backend/kratos-conventions.md`.
 - Bootstrap evidence: `specs/000-bootstrap/research.md`.
 - First full SDD feature should be the minimum integration loop: login, current user, menu permissions, and Higress routing between Ant Design Pro and Kratos.
 - Observability is optional and pluggable; do not make `prometheus/` or `grafana/` part of the default small-project runtime without an explicit spec decision.

@@ -105,6 +105,8 @@ Use this flow for new features or the first real integrated product capability.
    - UTF-8 for all generated docs, configs, and source files.
    - Monorepo boundaries stay explicit.
    - Higress is gateway, Kratos is backend, Ant Design Pro is frontend.
+   - Frontend work follows `docs/frontend/ant-design-pro-conventions.md`.
+   - Backend work follows `docs/backend/kratos-conventions.md`.
    - MCP is optional side capability, not core business coupling.
    - Prometheus/Grafana are optional observability modules.
    - Keep small-project runtime lean.
@@ -129,6 +131,8 @@ Use this flow for new features or the first real integrated product capability.
    - Gateway route plan.
    - Kratos HTTP/gRPC service contract.
    - Frontend request adapter and proxy strategy.
+   - Ant Design Pro / ProComponents page and component choices.
+   - Kratos service/biz/data layer ownership and generation steps.
    - Auth/session/token choice.
    - Test and verification approach.
 
@@ -268,6 +272,11 @@ Current independent modules:
 - `mcp/`: reserved for future optional services.
 
 When writing specs, be explicit about which modules are involved and which are intentionally out of scope.
+
+Frontend and backend feature planning must also read:
+
+- `docs/frontend/ant-design-pro-conventions.md`
+- `docs/backend/kratos-conventions.md`
 
 ## Common Prompts
 
