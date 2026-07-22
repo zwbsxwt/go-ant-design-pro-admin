@@ -1,0 +1,170 @@
+openapi: 3.0.3
+info:
+  title: Minimum Login Integration Auth Contract
+  version: 0.1.0
+  description: Contract for the first Ant Design Pro, Kratos, and Higress login loop.
+servers:
+  - url: /api
+paths:
+  /login/account:
+    post:
+      summary: Sign in with username and password
+      operationId: loginAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login accepted or rejected in Ant Design Pro-compatible shape
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginReply"
+        "401":
+          description: Invalid credentials or disabled user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorReply"
+  /currentUser:
+    get:
+      summary: Return current signed-in user
+      operationId: currentUser
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user wrapped for the existing Ant Design Pro service
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentUserReply"
+        "401":
+          description: Missing, invalid, expired, or disabled authenticated state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorReply"
+  /login/outLogin:
+    post:
+      summary: Clear current sign-in state on the client
+      operationId: outLogin
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logout accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OkReply"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          example: account
+        autoLogin:
+          type: boolean
+    LoginReply:
+      type: object
+      required:
+        - status
+        - type
+      properties:
+        status:
+          type: string
+          enum: [ok, error]
+        type:
+          type: string
+          example: account
+        currentAuthority:
+          type: string
+          enum: [admin, user, guest]
+        token:
+          type: string
+          description: Bearer token for subsequent protected requests.
+        expiresAt:
+          type: string
+          format: date-time
+        errorMessage:
+          type: string
+    CurrentUserReply:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/CurrentUser"
+    CurrentUser:
+      type: object
+      required:
+        - userid
+        - name
+        - access
+        - status
+        - menuPermissions
+      properties:
+        userid:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+        avatar:
+          type: string
+        access:
+          type: string
+          enum: [admin, user]
+        role:
+          type: string
+          enum: [admin, user]
+        status:
+          type: string
+          enum: [ACTIVE, DISABLED]
+        menuPermissions:
+          type: array
+          items:
+            type: string
+    OkReply:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+    ErrorReply:
+      type: object
+      required:
+        - errorCode
+        - errorMessage
+      properties:
+        success:
+          type: boolean
+          example: false
+        errorCode:
+          type: string
+          example: AUTH_INVALID_CREDENTIALS
+        errorMessage:
+          type: string
+        showType:
+          type: integer
+          example: 2
