@@ -24,6 +24,11 @@ The current `web/` package is based on:
 - Tailwind CSS, `antd-style`, CSS Modules, and Ant Design CSS variables for
   styling.
 
+The template uses Ant Design Pro simple mode as its baseline. Demo pages and
+mock-only API surfaces from the full Ant Design Pro example app are not part of
+the framework template. Add new pages through SDD feature specs and real Kratos
+API contracts instead of restoring demo modules.
+
 Do not add legacy Ant Design Pro v5 assumptions such as importing from `umi`,
 using separate `@ant-design/pro-table` packages, relying on Less as the primary
 style layer, or introducing `moment`.

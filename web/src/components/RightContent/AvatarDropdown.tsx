@@ -1,13 +1,9 @@
-import {
-  LogoutOutlined,
-  SettingOutlined,
-  SkinOutlined,
-} from '@ant-design/icons';
+import { LogoutOutlined, SkinOutlined } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import type { MenuProps } from 'antd';
 import { Spin } from 'antd';
 import React, { startTransition } from 'react';
-import { outLogin } from '@/services/ant-design-pro/api';
+import { logoutAccount } from '@/services/admin/auth';
 import HeaderDropdown from '../HeaderDropdown';
 
 type GlobalHeaderRightProps = {
@@ -15,11 +11,6 @@ type GlobalHeaderRightProps = {
 };
 
 const menuItems: MenuProps['items'] = [
-  {
-    key: 'settings',
-    icon: <SettingOutlined />,
-    label: '个人设置',
-  },
   {
     key: 'theme',
     icon: <SkinOutlined />,
@@ -37,9 +28,9 @@ const menuItems: MenuProps['items'] = [
 
 const loginOut = async () => {
   try {
-    await outLogin();
+    await logoutAccount();
   } catch {
-    // Local logout has already cleared user state; redirect should still proceed.
+    // Local logout still redirects even if the backend request fails.
   }
   const { search, pathname } = window.location;
   const urlParams = new URL(window.location.href).searchParams;
@@ -71,9 +62,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
     }
     if (key === 'theme') {
       setInitialState((s) => ({ ...s, settingDrawerOpen: true }));
-      return;
     }
-    history.push(`/account/${key}`);
   };
 
   if (!initialState) {

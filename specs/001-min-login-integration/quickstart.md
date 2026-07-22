@@ -61,6 +61,8 @@ Expected:
 - Opening `/user/login` shows the Ant Design Pro login page.
 - Invalid credentials show a login failure state.
 - Integrated verification uses real backend responses, not frontend mock data.
+- The frontend is in Ant Design Pro simple mode; demo dashboard/list/mock API
+  pages are intentionally absent.
 
 ## Independent Gateway Check
 

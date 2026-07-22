@@ -47,12 +47,17 @@ This spike validates that the framework modules can run independently before SDD
 ### Ant Design Pro
 
 - Directory: `web/`
-- Runtime: `npm start`
+- Mode: Simple mode. The demo dashboard, form, list, profile, account, result,
+  register, table-list, and chatbot pages have been removed.
+- Runtime: `npm run start:no-mock`
 - UI: `http://localhost:8000`
-- Default mock login:
+- Local real login:
   - Username: `admin`
   - Password: `ant.design`
-- Note: Development server memory usage was about 1.35 GiB.
+- Notes:
+  - Frontend OpenAPI generation is scoped to auth endpoints only.
+  - Production build emitted 26 assets after switching to simple mode.
+  - Previous full-mode development server memory usage was about 1.35 GiB.
 
 ### Kratos
 
@@ -87,4 +92,7 @@ This spike validates that the framework modules can run independently before SDD
 
 - Spec Kit initialized in Codex skills mode.
 - Project constitution established at `.specify/memory/constitution.md`.
-- Next full SDD feature: login, current user, menu permissions, and gateway routing.
+- Login, current user, menu permissions, and gateway routing are implemented in
+  `specs/001-min-login-integration`.
+- Next full SDD feature should build a real module on top of the simple frontend
+  shell rather than restoring Ant Design Pro demo pages.

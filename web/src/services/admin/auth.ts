@@ -1,4 +1,6 @@
-import { currentUser, login, outLogin } from '@/services/ant-design-pro/api';
+import { currentUser } from '@/services/ant-design-pro/currentUser';
+import { login } from '@/services/ant-design-pro/login';
+import { outLogin } from '@/services/ant-design-pro/outLogin';
 import { clearAuthState, setAuthToken } from '@/utils/authState';
 
 export async function loginAccount(params: API.LoginParams) {
