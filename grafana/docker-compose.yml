@@ -1,0 +1,31 @@
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: template-v6-grafana
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT:-3003}:3000"
+    environment:
+      GF_SERVER_ROOT_URL: "${GRAFANA_ROOT_URL:-http://localhost:3003/}"
+      GF_SECURITY_ADMIN_USER: "${GRAFANA_ADMIN_USER:-admin}"
+      GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:-admin}"
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+      GF_SECURITY_COOKIE_SAMESITE: "${GRAFANA_COOKIE_SAMESITE:-lax}"
+      GF_SECURITY_COOKIE_SECURE: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+      GF_USERS_DEFAULT_THEME: "light"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./provisioning:/etc/grafana/provisioning
+    networks:
+      - default
+      - observability
+
+volumes:
+  grafana_data:
+
+networks:
+  observability:
+    external: true
+    name: template-v6-observability

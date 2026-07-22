@@ -1,0 +1,230 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "higress-basic",
+    "title": "Higress Gateway Basic",
+    "tags": ["higress", "gateway", "prometheus"],
+    "timezone": "browser",
+    "schemaVersion": 41,
+    "version": 1,
+    "refresh": "10s",
+    "time": {
+      "from": "now-30m",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "type": "stat",
+        "title": "Gateway Target Up",
+        "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+        "datasource": { "type": "prometheus", "uid": "higress-prometheus" },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "up{job=\"higress-gateway\"}",
+            "legendFormat": "{{instance}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }
+            ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "red", "value": null },
+                { "color": "green", "value": 1 }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+          "orientation": "auto",
+          "textMode": "auto",
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 2,
+        "type": "stat",
+        "title": "Envoy Uptime",
+        "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+        "datasource": { "type": "prometheus", "uid": "higress-prometheus" },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "envoy_server_uptime{job=\"higress-gateway\"}",
+            "legendFormat": "uptime"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": { "unit": "s", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+          "orientation": "auto",
+          "textMode": "auto",
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 3,
+        "type": "stat",
+        "title": "Allocated Memory",
+        "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+        "datasource": { "type": "prometheus", "uid": "higress-prometheus" },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "envoy_server_memory_allocated{job=\"higress-gateway\"}",
+            "legendFormat": "allocated"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": { "unit": "bytes", "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] } },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+          "orientation": "auto",
+          "textMode": "auto",
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 4,
+        "type": "stat",
+        "title": "Active Downstream Connections",
+        "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+        "datasource": { "type": "prometheus", "uid": "higress-prometheus" },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "sum(envoy_http_downstream_cx_active{job=\"higress-gateway\"})",
+            "legendFormat": "active connections"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+          "orientation": "auto",
+          "textMode": "auto",
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 5,
+        "type": "timeseries",
+        "title": "Downstream Requests Per Second",
+        "gridPos": { "h": 9, "w": 12, "x": 0, "y": 6 },
+        "datasource": { "type": "prometheus", "uid": "higress-prometheus" },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "sum(rate(envoy_http_downstream_rq_total{job=\"higress-gateway\"}[1m]))",
+            "legendFormat": "requests/s"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": { "unit": "reqps", "custom": { "drawStyle": "line", "lineInterpolation": "linear", "fillOpacity": 15, "showPoints": "never" } },
+          "overrides": []
+        },
+        "options": {
+          "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "mode": "single", "sort": "none" }
+        }
+      },
+      {
+        "id": 6,
+        "type": "timeseries",
+        "title": "Request Duration",
+        "gridPos": { "h": 9, "w": 12, "x": 12, "y": 6 },
+        "datasource": { "type": "prometheus", "uid": "higress-prometheus" },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "histogram_quantile(0.95, sum(rate(envoy_http_downstream_rq_time_bucket{job=\"higress-gateway\"}[1m])) by (le))",
+            "legendFormat": "p95"
+          },
+          {
+            "refId": "B",
+            "expr": "histogram_quantile(0.50, sum(rate(envoy_http_downstream_rq_time_bucket{job=\"higress-gateway\"}[1m])) by (le))",
+            "legendFormat": "p50"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": { "unit": "ms", "custom": { "drawStyle": "line", "lineInterpolation": "linear", "fillOpacity": 10, "showPoints": "never" } },
+          "overrides": []
+        },
+        "options": {
+          "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "mode": "multi", "sort": "none" }
+        }
+      },
+      {
+        "id": 7,
+        "type": "timeseries",
+        "title": "Upstream Requests By Cluster",
+        "gridPos": { "h": 9, "w": 12, "x": 0, "y": 15 },
+        "datasource": { "type": "prometheus", "uid": "higress-prometheus" },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "sum by (cluster_name) (rate(envoy_cluster_upstream_rq_total{job=\"higress-gateway\"}[1m]))",
+            "legendFormat": "{{cluster_name}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": { "unit": "reqps", "custom": { "drawStyle": "line", "lineInterpolation": "linear", "fillOpacity": 10, "showPoints": "never" } },
+          "overrides": []
+        },
+        "options": {
+          "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "mode": "multi", "sort": "none" }
+        }
+      },
+      {
+        "id": 8,
+        "type": "timeseries",
+        "title": "CPU Seconds",
+        "gridPos": { "h": 9, "w": 12, "x": 12, "y": 15 },
+        "datasource": { "type": "prometheus", "uid": "higress-prometheus" },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "rate(istio_agent_process_cpu_seconds_total{job=\"higress-gateway\"}[1m])",
+            "legendFormat": "agent cpu"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": { "unit": "s", "custom": { "drawStyle": "line", "lineInterpolation": "linear", "fillOpacity": 10, "showPoints": "never" } },
+          "overrides": []
+        },
+        "options": {
+          "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "mode": "single", "sort": "none" }
+        }
+      }
+    ]
+  },
+  "folderUid": "",
+  "overwrite": true,
+  "message": "Import Higress basic dashboard"
+}
+

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Spec Kit SDD"
+  short_description: "Guide SDD workflows with GitHub Spec Kit"
+  default_prompt: "Use $spec-kit-skill to plan and execute an SDD feature workflow in this repository."
+

@@ -1,0 +1,67 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+*.err.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+**/.env
+.env.local
+.env.*.local
+!.env.example
+!**/.env.example
+
+# Archives and temporary downloads
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Local verification images
+*-screenshot.png
+*dashboard.png
+*home.png
+*ui.png
+
+# Node / frontend
+node_modules/
+web/node_modules/
+web/dist/
+web/_upstream_git/
+web/.umi/
+web/.umi-production/
+web/.cache/
+web/.mfsu/
+web/types/cache/
+web/dev-server.log
+web/dev-server.err.log
+
+# Go / Kratos
+server/**/bin/
+server/**/tmp/
+server/**/server.log
+server/**/server.err.log
+
+# Higress local runtime
+gateway/higress-main/
+gateway/higress-runtime/
+gateway/higress-main.zip
+gateway/*.png
+
+# Observability local runtime artifacts
+grafana/*.png
+prometheus/data/
+
+# Spec Kit local cache, if any
+.specify/cache/
