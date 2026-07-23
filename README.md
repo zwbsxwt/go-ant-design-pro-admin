@@ -214,6 +214,8 @@ specs/005-system-role-management/
 specs/006-system-user-management/
 ```
 
+Chinese SDD workspace entry: [specs/README.zh-CN.md](specs/README.zh-CN.md).
+
 Use the SDD process for work that changes product behavior, API contracts,
 database schema, permissions, gateway routing, observability, MCP integration,
 or deployment boundaries. Small bootstrap checks can be recorded in

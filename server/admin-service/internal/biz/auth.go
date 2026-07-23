@@ -32,6 +32,7 @@ type AuthUser struct {
 	Avatar            string
 	MenuPermissions   []string
 	ButtonPermissions []string
+	Menus             []*Menu
 }
 
 // LoginResult is the result of a successful login.

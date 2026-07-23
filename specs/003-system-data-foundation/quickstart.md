@@ -32,7 +32,7 @@ Run the data integration test against the local containers:
 
 ```powershell
 cd server/admin-service
-$env:ADMIN_SERVICE_TEST_MYSQL_DSN='root:root@tcp(127.0.0.1:3306)/go_ant_design_pro_admin?parseTime=True&loc=Local'
+$env:ADMIN_SERVICE_TEST_MYSQL_DSN='root:root@tcp(127.0.0.1:3306)/go_ant_design_pro_admin?charset=utf8mb4&parseTime=True&loc=Local'
 $env:ADMIN_SERVICE_TEST_REDIS_ADDR='127.0.0.1:6379'
 go test ./internal/data
 ```

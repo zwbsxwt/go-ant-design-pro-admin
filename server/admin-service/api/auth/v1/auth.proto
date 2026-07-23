@@ -70,6 +70,21 @@ message CurrentUser {
   repeated string menu_permissions = 8;
   repeated string button_permissions = 9;
   repeated string role_codes = 10;
+  repeated CurrentUserMenu menus = 11;
+}
+
+message CurrentUserMenu {
+  string id = 1;
+  string parent_id = 2;
+  string type = 3;
+  string name = 4;
+  string path = 5;
+  string component = 6;
+  string permission_code = 7;
+  string icon = 8;
+  int32 sort = 9;
+  string status = 10;
+  repeated CurrentUserMenu children = 11;
 }
 
 message OutLoginRequest {}

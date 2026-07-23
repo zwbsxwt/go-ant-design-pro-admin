@@ -120,7 +120,68 @@ GROUP BY u.id, u.username, u.display_name, u.password_hash, u.avatar, u.status`,
 	user.RoleCodes = splitCSV(rolesCSV)
 	user.MenuPermissions = splitCSV(permissionsCSV)
 	user.ButtonPermissions = splitCSV(buttonPermissionsCSV)
+	menus, err := r.findUserMenus(ctx, user.ID)
+	if err != nil {
+		return nil, "", err
+	}
+	user.Menus = biz.BuildMenuTree(menus)
 	return &user, passwordHash, nil
+}
+
+func (r *authRepo) findUserMenus(ctx context.Context, userID string) ([]*biz.Menu, error) {
+	rows, err := r.data.db.QueryContext(ctx, `
+SELECT DISTINCT
+  m.id,
+  COALESCE(m.parent_id, ''),
+  m.type,
+  m.name,
+  COALESCE(m.path, ''),
+  COALESCE(m.component, ''),
+  m.permission_code,
+  COALESCE(m.icon, ''),
+  m.sort,
+  m.status,
+  m.created_at,
+  m.updated_at
+FROM system_users u
+JOIN system_user_roles ur ON ur.user_id = u.id
+JOIN system_roles r ON r.id = ur.role_id AND r.status = 'ACTIVE'
+JOIN system_role_menus rm ON rm.role_id = r.id
+JOIN system_menus m ON m.id = rm.menu_id AND m.status = 'ACTIVE'
+WHERE u.id = ?
+  AND u.status = 'ACTIVE'
+  AND m.type <> 'button'
+ORDER BY m.sort, m.permission_code`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	menus := make([]*biz.Menu, 0)
+	for rows.Next() {
+		var menu biz.Menu
+		if err := rows.Scan(
+			&menu.ID,
+			&menu.ParentID,
+			&menu.Type,
+			&menu.Name,
+			&menu.Path,
+			&menu.Component,
+			&menu.PermissionCode,
+			&menu.Icon,
+			&menu.Sort,
+			&menu.Status,
+			&menu.CreatedAt,
+			&menu.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		menus = append(menus, &menu)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return menus, nil
 }
 
 func randomToken() (string, error) {

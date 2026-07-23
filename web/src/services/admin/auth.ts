@@ -51,6 +51,7 @@ function normalizeCurrentUser(user?: API.CurrentUser) {
     menu_permissions?: string[];
     button_permissions?: string[];
     role_codes?: string[];
+    menus?: API.CurrentUserMenu[];
   };
   const normalized = { ...user };
   if (normalized.userid === undefined && raw.userid !== undefined) {
@@ -71,5 +72,24 @@ function normalizeCurrentUser(user?: API.CurrentUser) {
   if (normalized.roleCodes === undefined && raw.role_codes !== undefined) {
     normalized.roleCodes = raw.role_codes;
   }
+  if (normalized.menus === undefined && raw.menus !== undefined) {
+    normalized.menus = normalizeCurrentUserMenus(raw.menus);
+  } else if (normalized.menus !== undefined) {
+    normalized.menus = normalizeCurrentUserMenus(normalized.menus);
+  }
   return normalized;
+}
+
+function normalizeCurrentUserMenus(
+  menus?: API.CurrentUserMenu[],
+): API.CurrentUserMenu[] {
+  return (menus || []).map((menu) => {
+    const normalized = {
+      ...menu,
+      parentId: menu.parentId ?? menu.parent_id,
+      permissionCode: menu.permissionCode ?? menu.permission_code,
+    };
+    normalized.children = normalizeCurrentUserMenus(menu.children);
+    return normalized;
+  });
 }

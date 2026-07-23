@@ -623,6 +623,38 @@ components:
                     type: array
                     items:
                         type: string
+                menus:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/auth.v1.CurrentUserMenu'
+        auth.v1.CurrentUserMenu:
+            type: object
+            properties:
+                id:
+                    type: string
+                parentId:
+                    type: string
+                type:
+                    type: string
+                name:
+                    type: string
+                path:
+                    type: string
+                component:
+                    type: string
+                permissionCode:
+                    type: string
+                icon:
+                    type: string
+                sort:
+                    type: integer
+                    format: int32
+                status:
+                    type: string
+                children:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/auth.v1.CurrentUserMenu'
         auth.v1.CurrentUserReply:
             type: object
             properties:

@@ -106,5 +106,29 @@ func convertCurrentUser(user *biz.AuthUser) *v1.CurrentUser {
 		MenuPermissions:   append([]string(nil), user.MenuPermissions...),
 		ButtonPermissions: append([]string(nil), user.ButtonPermissions...),
 		RoleCodes:         append([]string(nil), user.RoleCodes...),
+		Menus:             convertCurrentUserMenus(user.Menus),
 	}
+}
+
+func convertCurrentUserMenus(menus []*biz.Menu) []*v1.CurrentUserMenu {
+	result := make([]*v1.CurrentUserMenu, 0, len(menus))
+	for _, menu := range menus {
+		if menu == nil {
+			continue
+		}
+		result = append(result, &v1.CurrentUserMenu{
+			Id:             menu.ID,
+			ParentId:       menu.ParentID,
+			Type:           menu.Type,
+			Name:           menu.Name,
+			Path:           menu.Path,
+			Component:      menu.Component,
+			PermissionCode: menu.PermissionCode,
+			Icon:           menu.Icon,
+			Sort:           menu.Sort,
+			Status:         menu.Status,
+			Children:       convertCurrentUserMenus(menu.Children),
+		})
+	}
+	return result
 }

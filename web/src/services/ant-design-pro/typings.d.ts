@@ -10,6 +10,24 @@ declare namespace API {
     status?: string;
     menuPermissions?: string[];
     buttonPermissions?: string[];
+    menus?: CurrentUserMenu[];
+    menu_tree?: CurrentUserMenu[];
+  };
+
+  type CurrentUserMenu = {
+    id?: string;
+    parentId?: string;
+    parent_id?: string;
+    type?: 'directory' | 'page';
+    name?: string;
+    path?: string;
+    component?: string;
+    permissionCode?: string;
+    permission_code?: string;
+    icon?: string;
+    sort?: number;
+    status?: 'ACTIVE' | 'DISABLED';
+    children?: CurrentUserMenu[];
   };
 
   type SystemMenu = {

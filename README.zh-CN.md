@@ -216,6 +216,8 @@ specs/005-system-role-management/
 specs/006-system-user-management/
 ```
 
+中文 SDD 工作台见：[specs/README.zh-CN.md](specs/README.zh-CN.md)。
+
 以下类型的工作必须走 SDD：产品行为、API 契约、数据库结构、权限模型、网关
 路由、观测能力、MCP 接入、部署边界。单纯的组件跑通或技术 spike 可以记录在
 `specs/000-bootstrap/research.md`。

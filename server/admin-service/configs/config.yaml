@@ -8,7 +8,7 @@ server:
 data:
   database:
     driver: mysql
-    source: root:root@tcp(127.0.0.1:3306)/go_ant_design_pro_admin?parseTime=True&loc=Local
+    source: root:root@tcp(127.0.0.1:3306)/go_ant_design_pro_admin?charset=utf8mb4&parseTime=True&loc=Local
   redis:
     network: tcp
     addr: 127.0.0.1:6379

@@ -1,5 +1,5 @@
-import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
+import type { MenuDataItem } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
@@ -12,20 +12,23 @@ dayjs.extend(relativeTime);
 
 import {
   AvatarDropdown,
-  DocLink,
   ErrorBoundary,
   Footer,
-  LangDropdown,
   OfflineBanner,
-  VersionDropdown,
 } from '@/components';
 import { queryCurrentUser } from '@/services/admin/auth';
 import { clearAuthState } from '@/utils/authState';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 
-const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+
+type WhitelistMenuDataItem = MenuDataItem & {
+  permissionCode?: string;
+  component?: string;
+  routes?: WhitelistMenuDataItem[];
+  children?: WhitelistMenuDataItem[];
+};
 
 /**
  * @see https://umijs.org/docs/api/runtime-config#getinitialstate
@@ -86,17 +89,12 @@ export const layout: RunTimeLayoutConfig = ({
       }
       return dom;
     },
-    actionsRender: () => {
-      // `locale: false` opts out of the language switcher. ProLayout's own
-      // `locale` prop is a locale string, so narrow to the boolean toggle here.
-      const localeEnabled =
-        (initialState?.settings as { locale?: boolean })?.locale !== false;
-      return [
-        <DocLink key="doc" />,
-        <VersionDropdown key="version" />,
-        localeEnabled && <LangDropdown key="lang" />,
-      ].filter(Boolean);
-    },
+    menuDataRender: (menuData) =>
+      buildDatabaseBackedMenuData(
+        menuData as WhitelistMenuDataItem[],
+        initialState?.currentUser?.menus,
+      ),
+    actionsRender: () => [],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: 'ProUser',
@@ -137,14 +135,7 @@ export const layout: RunTimeLayoutConfig = ({
         width: '331px',
       },
     ],
-    links: isDev
-      ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
-      : [],
+    links: [],
     // Replace ProLayout's default ErrorBoundary with our offline-aware version,
     // so chunk load errors show friendly messages instead of "Something went wrong."
     ErrorBoundary,
@@ -181,6 +172,78 @@ export const layout: RunTimeLayoutConfig = ({
     ...initialState?.settings,
   };
 };
+
+function buildDatabaseBackedMenuData(
+  staticMenus: WhitelistMenuDataItem[],
+  currentUserMenus?: API.CurrentUserMenu[],
+): MenuDataItem[] {
+  if (!currentUserMenus || currentUserMenus.length === 0) {
+    return staticMenus;
+  }
+
+  const whitelist = createRouteWhitelist(staticMenus);
+  return currentUserMenus
+    .map((menu) => toMenuDataItem(menu, whitelist))
+    .filter(Boolean) as MenuDataItem[];
+}
+
+function createRouteWhitelist(staticMenus: WhitelistMenuDataItem[]) {
+  const byPermissionCode = new Map<string, WhitelistMenuDataItem>();
+  const byPath = new Map<string, WhitelistMenuDataItem>();
+
+  const walk = (items: WhitelistMenuDataItem[]) => {
+    for (const item of items) {
+      if (item.permissionCode) {
+        byPermissionCode.set(item.permissionCode, item);
+      }
+      if (item.path) {
+        byPath.set(item.path, item);
+      }
+      walk((item.children || item.routes || []) as WhitelistMenuDataItem[]);
+    }
+  };
+
+  walk(staticMenus);
+  return { byPermissionCode, byPath };
+}
+
+function toMenuDataItem(
+  menu: API.CurrentUserMenu,
+  whitelist: ReturnType<typeof createRouteWhitelist>,
+): MenuDataItem | undefined {
+  if (menu.status && menu.status !== 'ACTIVE') {
+    return undefined;
+  }
+
+  const permissionCode = menu.permissionCode || menu.permission_code || '';
+  const route =
+    whitelist.byPermissionCode.get(permissionCode) ||
+    whitelist.byPath.get(menu.path || '');
+  if (!route) {
+    return undefined;
+  }
+
+  if (
+    menu.type === 'page' &&
+    menu.component &&
+    route.component &&
+    menu.component !== route.component
+  ) {
+    return undefined;
+  }
+
+  const children = (menu.children || [])
+    .map((child) => toMenuDataItem(child, whitelist))
+    .filter(Boolean) as MenuDataItem[];
+
+  return {
+    ...route,
+    name: menu.name || route.name,
+    path: route.path || menu.path,
+    icon: route.icon,
+    children,
+  };
+}
 
 /**
  * @name request 配置，可以配置错误处理

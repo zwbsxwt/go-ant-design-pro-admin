@@ -267,6 +267,7 @@ type CurrentUser struct {
 	MenuPermissions   []string               `protobuf:"bytes,8,rep,name=menu_permissions,json=menuPermissions,proto3" json:"menu_permissions,omitempty"`
 	ButtonPermissions []string               `protobuf:"bytes,9,rep,name=button_permissions,json=buttonPermissions,proto3" json:"button_permissions,omitempty"`
 	RoleCodes         []string               `protobuf:"bytes,10,rep,name=role_codes,json=roleCodes,proto3" json:"role_codes,omitempty"`
+	Menus             []*CurrentUserMenu     `protobuf:"bytes,11,rep,name=menus,proto3" json:"menus,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -371,6 +372,137 @@ func (x *CurrentUser) GetRoleCodes() []string {
 	return nil
 }
 
+func (x *CurrentUser) GetMenus() []*CurrentUserMenu {
+	if x != nil {
+		return x.Menus
+	}
+	return nil
+}
+
+type CurrentUserMenu struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ParentId       string                 `protobuf:"bytes,2,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
+	Type           string                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
+	Name           string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Path           string                 `protobuf:"bytes,5,opt,name=path,proto3" json:"path,omitempty"`
+	Component      string                 `protobuf:"bytes,6,opt,name=component,proto3" json:"component,omitempty"`
+	PermissionCode string                 `protobuf:"bytes,7,opt,name=permission_code,json=permissionCode,proto3" json:"permission_code,omitempty"`
+	Icon           string                 `protobuf:"bytes,8,opt,name=icon,proto3" json:"icon,omitempty"`
+	Sort           int32                  `protobuf:"varint,9,opt,name=sort,proto3" json:"sort,omitempty"`
+	Status         string                 `protobuf:"bytes,10,opt,name=status,proto3" json:"status,omitempty"`
+	Children       []*CurrentUserMenu     `protobuf:"bytes,11,rep,name=children,proto3" json:"children,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *CurrentUserMenu) Reset() {
+	*x = CurrentUserMenu{}
+	mi := &file_auth_v1_auth_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CurrentUserMenu) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CurrentUserMenu) ProtoMessage() {}
+
+func (x *CurrentUserMenu) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_v1_auth_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CurrentUserMenu.ProtoReflect.Descriptor instead.
+func (*CurrentUserMenu) Descriptor() ([]byte, []int) {
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CurrentUserMenu) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *CurrentUserMenu) GetParentId() string {
+	if x != nil {
+		return x.ParentId
+	}
+	return ""
+}
+
+func (x *CurrentUserMenu) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *CurrentUserMenu) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CurrentUserMenu) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *CurrentUserMenu) GetComponent() string {
+	if x != nil {
+		return x.Component
+	}
+	return ""
+}
+
+func (x *CurrentUserMenu) GetPermissionCode() string {
+	if x != nil {
+		return x.PermissionCode
+	}
+	return ""
+}
+
+func (x *CurrentUserMenu) GetIcon() string {
+	if x != nil {
+		return x.Icon
+	}
+	return ""
+}
+
+func (x *CurrentUserMenu) GetSort() int32 {
+	if x != nil {
+		return x.Sort
+	}
+	return 0
+}
+
+func (x *CurrentUserMenu) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *CurrentUserMenu) GetChildren() []*CurrentUserMenu {
+	if x != nil {
+		return x.Children
+	}
+	return nil
+}
+
 type OutLoginRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -379,7 +511,7 @@ type OutLoginRequest struct {
 
 func (x *OutLoginRequest) Reset() {
 	*x = OutLoginRequest{}
-	mi := &file_auth_v1_auth_proto_msgTypes[5]
+	mi := &file_auth_v1_auth_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -391,7 +523,7 @@ func (x *OutLoginRequest) String() string {
 func (*OutLoginRequest) ProtoMessage() {}
 
 func (x *OutLoginRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[5]
+	mi := &file_auth_v1_auth_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -404,7 +536,7 @@ func (x *OutLoginRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OutLoginRequest.ProtoReflect.Descriptor instead.
 func (*OutLoginRequest) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{5}
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{6}
 }
 
 type OutLoginReply struct {
@@ -416,7 +548,7 @@ type OutLoginReply struct {
 
 func (x *OutLoginReply) Reset() {
 	*x = OutLoginReply{}
-	mi := &file_auth_v1_auth_proto_msgTypes[6]
+	mi := &file_auth_v1_auth_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -428,7 +560,7 @@ func (x *OutLoginReply) String() string {
 func (*OutLoginReply) ProtoMessage() {}
 
 func (x *OutLoginReply) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[6]
+	mi := &file_auth_v1_auth_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -441,7 +573,7 @@ func (x *OutLoginReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OutLoginReply.ProtoReflect.Descriptor instead.
 func (*OutLoginReply) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{6}
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *OutLoginReply) GetSuccess() bool {
@@ -473,7 +605,7 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\rerror_message\x18\x06 \x01(\tR\ferrorMessage\"\x14\n" +
 	"\x12CurrentUserRequest\"<\n" +
 	"\x10CurrentUserReply\x12(\n" +
-	"\x04data\x18\x01 \x01(\v2\x14.auth.v1.CurrentUserR\x04data\"\xaa\x02\n" +
+	"\x04data\x18\x01 \x01(\v2\x14.auth.v1.CurrentUserR\x04data\"\xda\x02\n" +
 	"\vCurrentUser\x12\x16\n" +
 	"\x06userid\x18\x01 \x01(\tR\x06userid\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
@@ -486,7 +618,21 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\x12button_permissions\x18\t \x03(\tR\x11buttonPermissions\x12\x1d\n" +
 	"\n" +
 	"role_codes\x18\n" +
-	" \x03(\tR\troleCodes\"\x11\n" +
+	" \x03(\tR\troleCodes\x12.\n" +
+	"\x05menus\x18\v \x03(\v2\x18.auth.v1.CurrentUserMenuR\x05menus\"\xb7\x02\n" +
+	"\x0fCurrentUserMenu\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
+	"\tparent_id\x18\x02 \x01(\tR\bparentId\x12\x12\n" +
+	"\x04type\x18\x03 \x01(\tR\x04type\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12\x12\n" +
+	"\x04path\x18\x05 \x01(\tR\x04path\x12\x1c\n" +
+	"\tcomponent\x18\x06 \x01(\tR\tcomponent\x12'\n" +
+	"\x0fpermission_code\x18\a \x01(\tR\x0epermissionCode\x12\x12\n" +
+	"\x04icon\x18\b \x01(\tR\x04icon\x12\x12\n" +
+	"\x04sort\x18\t \x01(\x05R\x04sort\x12\x16\n" +
+	"\x06status\x18\n" +
+	" \x01(\tR\x06status\x124\n" +
+	"\bchildren\x18\v \x03(\v2\x18.auth.v1.CurrentUserMenuR\bchildren\"\x11\n" +
 	"\x0fOutLoginRequest\")\n" +
 	"\rOutLoginReply\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess2\xa0\x02\n" +
@@ -508,31 +654,34 @@ func file_auth_v1_auth_proto_rawDescGZIP() []byte {
 	return file_auth_v1_auth_proto_rawDescData
 }
 
-var file_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_auth_v1_auth_proto_goTypes = []any{
 	(*LoginRequest)(nil),          // 0: auth.v1.LoginRequest
 	(*LoginReply)(nil),            // 1: auth.v1.LoginReply
 	(*CurrentUserRequest)(nil),    // 2: auth.v1.CurrentUserRequest
 	(*CurrentUserReply)(nil),      // 3: auth.v1.CurrentUserReply
 	(*CurrentUser)(nil),           // 4: auth.v1.CurrentUser
-	(*OutLoginRequest)(nil),       // 5: auth.v1.OutLoginRequest
-	(*OutLoginReply)(nil),         // 6: auth.v1.OutLoginReply
-	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
+	(*CurrentUserMenu)(nil),       // 5: auth.v1.CurrentUserMenu
+	(*OutLoginRequest)(nil),       // 6: auth.v1.OutLoginRequest
+	(*OutLoginReply)(nil),         // 7: auth.v1.OutLoginReply
+	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
 }
 var file_auth_v1_auth_proto_depIdxs = []int32{
-	7, // 0: auth.v1.LoginReply.expires_at:type_name -> google.protobuf.Timestamp
+	8, // 0: auth.v1.LoginReply.expires_at:type_name -> google.protobuf.Timestamp
 	4, // 1: auth.v1.CurrentUserReply.data:type_name -> auth.v1.CurrentUser
-	0, // 2: auth.v1.AuthService.Login:input_type -> auth.v1.LoginRequest
-	2, // 3: auth.v1.AuthService.CurrentUser:input_type -> auth.v1.CurrentUserRequest
-	5, // 4: auth.v1.AuthService.OutLogin:input_type -> auth.v1.OutLoginRequest
-	1, // 5: auth.v1.AuthService.Login:output_type -> auth.v1.LoginReply
-	3, // 6: auth.v1.AuthService.CurrentUser:output_type -> auth.v1.CurrentUserReply
-	6, // 7: auth.v1.AuthService.OutLogin:output_type -> auth.v1.OutLoginReply
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5, // 2: auth.v1.CurrentUser.menus:type_name -> auth.v1.CurrentUserMenu
+	5, // 3: auth.v1.CurrentUserMenu.children:type_name -> auth.v1.CurrentUserMenu
+	0, // 4: auth.v1.AuthService.Login:input_type -> auth.v1.LoginRequest
+	2, // 5: auth.v1.AuthService.CurrentUser:input_type -> auth.v1.CurrentUserRequest
+	6, // 6: auth.v1.AuthService.OutLogin:input_type -> auth.v1.OutLoginRequest
+	1, // 7: auth.v1.AuthService.Login:output_type -> auth.v1.LoginReply
+	3, // 8: auth.v1.AuthService.CurrentUser:output_type -> auth.v1.CurrentUserReply
+	7, // 9: auth.v1.AuthService.OutLogin:output_type -> auth.v1.OutLoginReply
+	7, // [7:10] is the sub-list for method output_type
+	4, // [4:7] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_auth_v1_auth_proto_init() }
@@ -546,7 +695,7 @@ func file_auth_v1_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_auth_v1_auth_proto_rawDesc), len(file_auth_v1_auth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
