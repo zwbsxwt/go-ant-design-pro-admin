@@ -21,6 +21,7 @@
 | `010` | 模块切换与菜单分组 | 已完成 | [spec.md](010-module-menu-switch/spec.md) | [tasks.md](010-module-menu-switch/tasks.md) | [quickstart.md](010-module-menu-switch/quickstart.md) |
 | `011` | 模块与菜单管理体验优化 | 已完成 | [spec.md](011-module-menu-ux-optimization/spec.md) | [tasks.md](011-module-menu-ux-optimization/tasks.md) | [quickstart.md](011-module-menu-ux-optimization/quickstart.md) |
 | `012` | 模板初始化与品牌配置整理 | 已完成 | [spec.md](012-template-initialization-polish/spec.md) | [tasks.md](012-template-initialization-polish/tasks.md) | [quickstart.md](012-template-initialization-polish/quickstart.md) |
+| `013` | 用户管理头像交互优化 | 已完成 | [spec.md](013-system-user-avatar-ux-polish/spec.md) | [tasks.md](013-system-user-avatar-ux-polish/tasks.md) | [quickstart.md](013-system-user-avatar-ux-polish/quickstart.md) |
 
 ## 文件含义
 
@@ -58,6 +59,7 @@
 - 菜单支持隐藏/显示、启用/禁用、模块筛选和批量迁移模块。
 - 个人中心与密码设置。
 - RustFS/S3 头像上传与展示。
+- 用户管理只展示头像预览，不维护裸头像 URL。
 
 ## 推荐展示方式
 

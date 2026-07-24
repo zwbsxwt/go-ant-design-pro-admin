@@ -248,7 +248,11 @@ const UserManagement: React.FC = () => {
         }}
         onFinish={async (values) => {
           if (editingUser?.id) {
-            await updateUser(editingUser.id, values);
+            await updateUser(editingUser.id, {
+              ...editingUser,
+              ...values,
+              avatar: editingUser.avatar,
+            });
             message.success('保存成功');
           } else {
             await createUser(values);
@@ -283,7 +287,6 @@ const UserManagement: React.FC = () => {
         )}
         <ProFormText name="email" label="邮箱" />
         <ProFormText name="phone" label="手机号" />
-        <ProFormText name="avatar" label="头像 URL" />
         <ProFormSelect
           name="status"
           label="状态"

@@ -53,14 +53,20 @@ vi.mock('antd', () => ({
 }));
 
 vi.mock('@ant-design/pro-components', () => {
-  const ProFormText = () => null;
-  ProFormText.Password = () => null;
+  const ProFormText = ({ label }: { label?: React.ReactNode }) => (
+    <span>{label}</span>
+  );
+  ProFormText.Password = ({ label }: { label?: React.ReactNode }) => (
+    <span>{label}</span>
+  );
 
   return {
     ModalForm: ({ children }: { children?: React.ReactNode }) => (
       <div>{children}</div>
     ),
-    ProFormSelect: () => null,
+    ProFormSelect: ({ label }: { label?: React.ReactNode }) => (
+      <span>{label}</span>
+    ),
     ProFormText,
     ProTable: ({ columns, request }: any) => {
       const [rows, setRows] = React.useState<any[]>([]);
@@ -113,5 +119,11 @@ describe('UserManagement', () => {
     await waitFor(() => {
       expect(screen.getByText('系统管理员')).toBeInTheDocument();
     });
+  });
+
+  it('does not render manual avatar URL fields in user forms', () => {
+    render(<UserManagement />);
+
+    expect(screen.queryByText('头像 URL')).not.toBeInTheDocument();
   });
 });
