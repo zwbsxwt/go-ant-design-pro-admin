@@ -20,11 +20,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MenuService_ListMenus_FullMethodName  = "/system.v1.MenuService/ListMenus"
-	MenuService_GetMenu_FullMethodName    = "/system.v1.MenuService/GetMenu"
-	MenuService_CreateMenu_FullMethodName = "/system.v1.MenuService/CreateMenu"
-	MenuService_UpdateMenu_FullMethodName = "/system.v1.MenuService/UpdateMenu"
-	MenuService_DeleteMenu_FullMethodName = "/system.v1.MenuService/DeleteMenu"
+	MenuService_ListMenus_FullMethodName              = "/system.v1.MenuService/ListMenus"
+	MenuService_GetMenu_FullMethodName                = "/system.v1.MenuService/GetMenu"
+	MenuService_CreateMenu_FullMethodName             = "/system.v1.MenuService/CreateMenu"
+	MenuService_UpdateMenu_FullMethodName             = "/system.v1.MenuService/UpdateMenu"
+	MenuService_DeleteMenu_FullMethodName             = "/system.v1.MenuService/DeleteMenu"
+	MenuService_BatchMigrateMenuModule_FullMethodName = "/system.v1.MenuService/BatchMigrateMenuModule"
 )
 
 // MenuServiceClient is the client API for MenuService service.
@@ -36,6 +37,7 @@ type MenuServiceClient interface {
 	CreateMenu(ctx context.Context, in *CreateMenuRequest, opts ...grpc.CallOption) (*Menu, error)
 	UpdateMenu(ctx context.Context, in *UpdateMenuRequest, opts ...grpc.CallOption) (*Menu, error)
 	DeleteMenu(ctx context.Context, in *DeleteMenuRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	BatchMigrateMenuModule(ctx context.Context, in *BatchMigrateMenuModuleRequest, opts ...grpc.CallOption) (*BatchMigrateMenuModuleReply, error)
 }
 
 type menuServiceClient struct {
@@ -96,6 +98,16 @@ func (c *menuServiceClient) DeleteMenu(ctx context.Context, in *DeleteMenuReques
 	return out, nil
 }
 
+func (c *menuServiceClient) BatchMigrateMenuModule(ctx context.Context, in *BatchMigrateMenuModuleRequest, opts ...grpc.CallOption) (*BatchMigrateMenuModuleReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BatchMigrateMenuModuleReply)
+	err := c.cc.Invoke(ctx, MenuService_BatchMigrateMenuModule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MenuServiceServer is the server API for MenuService service.
 // All implementations must embed UnimplementedMenuServiceServer
 // for forward compatibility.
@@ -105,6 +117,7 @@ type MenuServiceServer interface {
 	CreateMenu(context.Context, *CreateMenuRequest) (*Menu, error)
 	UpdateMenu(context.Context, *UpdateMenuRequest) (*Menu, error)
 	DeleteMenu(context.Context, *DeleteMenuRequest) (*emptypb.Empty, error)
+	BatchMigrateMenuModule(context.Context, *BatchMigrateMenuModuleRequest) (*BatchMigrateMenuModuleReply, error)
 	mustEmbedUnimplementedMenuServiceServer()
 }
 
@@ -129,6 +142,9 @@ func (UnimplementedMenuServiceServer) UpdateMenu(context.Context, *UpdateMenuReq
 }
 func (UnimplementedMenuServiceServer) DeleteMenu(context.Context, *DeleteMenuRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteMenu not implemented")
+}
+func (UnimplementedMenuServiceServer) BatchMigrateMenuModule(context.Context, *BatchMigrateMenuModuleRequest) (*BatchMigrateMenuModuleReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method BatchMigrateMenuModule not implemented")
 }
 func (UnimplementedMenuServiceServer) mustEmbedUnimplementedMenuServiceServer() {}
 func (UnimplementedMenuServiceServer) testEmbeddedByValue()                     {}
@@ -241,6 +257,24 @@ func _MenuService_DeleteMenu_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MenuService_BatchMigrateMenuModule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchMigrateMenuModuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MenuServiceServer).BatchMigrateMenuModule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MenuService_BatchMigrateMenuModule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MenuServiceServer).BatchMigrateMenuModule(ctx, req.(*BatchMigrateMenuModuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MenuService_ServiceDesc is the grpc.ServiceDesc for MenuService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -267,6 +301,10 @@ var MenuService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteMenu",
 			Handler:    _MenuService_DeleteMenu_Handler,
+		},
+		{
+			MethodName: "BatchMigrateMenuModule",
+			Handler:    _MenuService_BatchMigrateMenuModule_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

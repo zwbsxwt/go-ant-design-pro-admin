@@ -14,3 +14,11 @@ data:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
     write_timeout: 0.2s
+  object_storage:
+    endpoint: ""
+    region: us-east-1
+    access_key: ""
+    secret_key: ""
+    bucket: go-ant-design-pro-admin
+    force_path_style: true
+    public_base_url: ""

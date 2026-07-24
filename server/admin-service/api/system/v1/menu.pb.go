@@ -39,6 +39,8 @@ type Menu struct {
 	Children       []*Menu                `protobuf:"bytes,11,rep,name=children,proto3" json:"children,omitempty"`
 	CreatedAt      *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt      *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	ModuleId       string                 `protobuf:"bytes,14,opt,name=module_id,json=moduleId,proto3" json:"module_id,omitempty"`
+	Hidden         bool                   `protobuf:"varint,15,opt,name=hidden,proto3" json:"hidden,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -164,6 +166,20 @@ func (x *Menu) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *Menu) GetModuleId() string {
+	if x != nil {
+		return x.ModuleId
+	}
+	return ""
+}
+
+func (x *Menu) GetHidden() bool {
+	if x != nil {
+		return x.Hidden
+	}
+	return false
+}
+
 type ListMenusRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -255,6 +271,8 @@ type CreateMenuRequest struct {
 	Icon           string                 `protobuf:"bytes,7,opt,name=icon,proto3" json:"icon,omitempty"`
 	Sort           int32                  `protobuf:"varint,8,opt,name=sort,proto3" json:"sort,omitempty"`
 	Status         string                 `protobuf:"bytes,9,opt,name=status,proto3" json:"status,omitempty"`
+	ModuleId       string                 `protobuf:"bytes,10,opt,name=module_id,json=moduleId,proto3" json:"module_id,omitempty"`
+	Hidden         bool                   `protobuf:"varint,11,opt,name=hidden,proto3" json:"hidden,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -352,6 +370,20 @@ func (x *CreateMenuRequest) GetStatus() string {
 	return ""
 }
 
+func (x *CreateMenuRequest) GetModuleId() string {
+	if x != nil {
+		return x.ModuleId
+	}
+	return ""
+}
+
+func (x *CreateMenuRequest) GetHidden() bool {
+	if x != nil {
+		return x.Hidden
+	}
+	return false
+}
+
 type GetMenuRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -408,6 +440,8 @@ type UpdateMenuRequest struct {
 	Icon           string                 `protobuf:"bytes,8,opt,name=icon,proto3" json:"icon,omitempty"`
 	Sort           int32                  `protobuf:"varint,9,opt,name=sort,proto3" json:"sort,omitempty"`
 	Status         string                 `protobuf:"bytes,10,opt,name=status,proto3" json:"status,omitempty"`
+	ModuleId       string                 `protobuf:"bytes,11,opt,name=module_id,json=moduleId,proto3" json:"module_id,omitempty"`
+	Hidden         bool                   `protobuf:"varint,12,opt,name=hidden,proto3" json:"hidden,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -512,6 +546,20 @@ func (x *UpdateMenuRequest) GetStatus() string {
 	return ""
 }
 
+func (x *UpdateMenuRequest) GetModuleId() string {
+	if x != nil {
+		return x.ModuleId
+	}
+	return ""
+}
+
+func (x *UpdateMenuRequest) GetHidden() bool {
+	if x != nil {
+		return x.Hidden
+	}
+	return false
+}
+
 type DeleteMenuRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -556,11 +604,107 @@ func (x *DeleteMenuRequest) GetId() string {
 	return ""
 }
 
+type BatchMigrateMenuModuleRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	MenuIds        []string               `protobuf:"bytes,1,rep,name=menu_ids,json=menuIds,proto3" json:"menu_ids,omitempty"`
+	TargetModuleId string                 `protobuf:"bytes,2,opt,name=target_module_id,json=targetModuleId,proto3" json:"target_module_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *BatchMigrateMenuModuleRequest) Reset() {
+	*x = BatchMigrateMenuModuleRequest{}
+	mi := &file_system_v1_menu_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BatchMigrateMenuModuleRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BatchMigrateMenuModuleRequest) ProtoMessage() {}
+
+func (x *BatchMigrateMenuModuleRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_system_v1_menu_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BatchMigrateMenuModuleRequest.ProtoReflect.Descriptor instead.
+func (*BatchMigrateMenuModuleRequest) Descriptor() ([]byte, []int) {
+	return file_system_v1_menu_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *BatchMigrateMenuModuleRequest) GetMenuIds() []string {
+	if x != nil {
+		return x.MenuIds
+	}
+	return nil
+}
+
+func (x *BatchMigrateMenuModuleRequest) GetTargetModuleId() string {
+	if x != nil {
+		return x.TargetModuleId
+	}
+	return ""
+}
+
+type BatchMigrateMenuModuleReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BatchMigrateMenuModuleReply) Reset() {
+	*x = BatchMigrateMenuModuleReply{}
+	mi := &file_system_v1_menu_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BatchMigrateMenuModuleReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BatchMigrateMenuModuleReply) ProtoMessage() {}
+
+func (x *BatchMigrateMenuModuleReply) ProtoReflect() protoreflect.Message {
+	mi := &file_system_v1_menu_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BatchMigrateMenuModuleReply.ProtoReflect.Descriptor instead.
+func (*BatchMigrateMenuModuleReply) Descriptor() ([]byte, []int) {
+	return file_system_v1_menu_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *BatchMigrateMenuModuleReply) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 var File_system_v1_menu_proto protoreflect.FileDescriptor
 
 const file_system_v1_menu_proto_rawDesc = "" +
 	"\n" +
-	"\x14system/v1/menu.proto\x12\tsystem.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x99\x03\n" +
+	"\x14system/v1/menu.proto\x12\tsystem.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xce\x03\n" +
 	"\x04Menu\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tparent_id\x18\x02 \x01(\tR\bparentId\x12\x12\n" +
@@ -577,10 +721,12 @@ const file_system_v1_menu_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\r \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x12\n" +
+	"updated_at\x18\r \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x1b\n" +
+	"\tmodule_id\x18\x0e \x01(\tR\bmoduleId\x12\x16\n" +
+	"\x06hidden\x18\x0f \x01(\bR\x06hidden\"\x12\n" +
 	"\x10ListMenusRequest\"5\n" +
 	"\x0eListMenusReply\x12#\n" +
-	"\x04data\x18\x01 \x03(\v2\x0f.system.v1.MenuR\x04data\"\x82\x02\n" +
+	"\x04data\x18\x01 \x03(\v2\x0f.system.v1.MenuR\x04data\"\xb7\x02\n" +
 	"\x11CreateMenuRequest\x12\x1b\n" +
 	"\tparent_id\x18\x01 \x01(\tR\bparentId\x12\x17\n" +
 	"\x04type\x18\x02 \x01(\tB\x03\xe0A\x02R\x04type\x12\x17\n" +
@@ -590,9 +736,12 @@ const file_system_v1_menu_proto_rawDesc = "" +
 	"\x0fpermission_code\x18\x06 \x01(\tB\x03\xe0A\x02R\x0epermissionCode\x12\x12\n" +
 	"\x04icon\x18\a \x01(\tR\x04icon\x12\x12\n" +
 	"\x04sort\x18\b \x01(\x05R\x04sort\x12\x16\n" +
-	"\x06status\x18\t \x01(\tR\x06status\"%\n" +
+	"\x06status\x18\t \x01(\tR\x06status\x12\x1b\n" +
+	"\tmodule_id\x18\n" +
+	" \x01(\tR\bmoduleId\x12\x16\n" +
+	"\x06hidden\x18\v \x01(\bR\x06hidden\"%\n" +
 	"\x0eGetMenuRequest\x12\x13\n" +
-	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\x97\x02\n" +
+	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\xcc\x02\n" +
 	"\x11UpdateMenuRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\x12\x1b\n" +
 	"\tparent_id\x18\x02 \x01(\tR\bparentId\x12\x17\n" +
@@ -604,9 +753,16 @@ const file_system_v1_menu_proto_rawDesc = "" +
 	"\x04icon\x18\b \x01(\tR\x04icon\x12\x12\n" +
 	"\x04sort\x18\t \x01(\x05R\x04sort\x12\x16\n" +
 	"\x06status\x18\n" +
-	" \x01(\tR\x06status\"(\n" +
+	" \x01(\tR\x06status\x12\x1b\n" +
+	"\tmodule_id\x18\v \x01(\tR\bmoduleId\x12\x16\n" +
+	"\x06hidden\x18\f \x01(\bR\x06hidden\"(\n" +
 	"\x11DeleteMenuRequest\x12\x13\n" +
-	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id2\xe3\x03\n" +
+	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"n\n" +
+	"\x1dBatchMigrateMenuModuleRequest\x12\x1e\n" +
+	"\bmenu_ids\x18\x01 \x03(\tB\x03\xe0A\x02R\amenuIds\x12-\n" +
+	"\x10target_module_id\x18\x02 \x01(\tB\x03\xe0A\x02R\x0etargetModuleId\"7\n" +
+	"\x1bBatchMigrateMenuModuleReply\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\x83\x05\n" +
 	"\vMenuService\x12^\n" +
 	"\tListMenus\x12\x1b.system.v1.ListMenusRequest\x1a\x19.system.v1.ListMenusReply\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/api/system/menus\x12U\n" +
 	"\aGetMenu\x12\x19.system.v1.GetMenuRequest\x1a\x0f.system.v1.Menu\"\x1e\x82\xd3\xe4\x93\x02\x18\x12\x16/api/system/menus/{id}\x12Y\n" +
@@ -615,7 +771,8 @@ const file_system_v1_menu_proto_rawDesc = "" +
 	"\n" +
 	"UpdateMenu\x12\x1c.system.v1.UpdateMenuRequest\x1a\x0f.system.v1.Menu\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\x1a\x16/api/system/menus/{id}\x12b\n" +
 	"\n" +
-	"DeleteMenu\x12\x1c.system.v1.DeleteMenuRequest\x1a\x16.google.protobuf.Empty\"\x1e\x82\xd3\xe4\x93\x02\x18*\x16/api/system/menus/{id}BN\n" +
+	"DeleteMenu\x12\x1c.system.v1.DeleteMenuRequest\x1a\x16.google.protobuf.Empty\"\x1e\x82\xd3\xe4\x93\x02\x18*\x16/api/system/menus/{id}\x12\x9d\x01\n" +
+	"\x16BatchMigrateMenuModule\x12(.system.v1.BatchMigrateMenuModuleRequest\x1a&.system.v1.BatchMigrateMenuModuleReply\"1\x82\xd3\xe4\x93\x02+:\x01*\"&/api/system/menus/batch-migrate-moduleBN\n" +
 	"\tsystem.v1P\x01Z1template-v6/server/admin-service/api/system/v1;v1\xa2\x02\vAPISystemV1b\x06proto3"
 
 var (
@@ -630,38 +787,42 @@ func file_system_v1_menu_proto_rawDescGZIP() []byte {
 	return file_system_v1_menu_proto_rawDescData
 }
 
-var file_system_v1_menu_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_system_v1_menu_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_system_v1_menu_proto_goTypes = []any{
-	(*Menu)(nil),                  // 0: system.v1.Menu
-	(*ListMenusRequest)(nil),      // 1: system.v1.ListMenusRequest
-	(*ListMenusReply)(nil),        // 2: system.v1.ListMenusReply
-	(*CreateMenuRequest)(nil),     // 3: system.v1.CreateMenuRequest
-	(*GetMenuRequest)(nil),        // 4: system.v1.GetMenuRequest
-	(*UpdateMenuRequest)(nil),     // 5: system.v1.UpdateMenuRequest
-	(*DeleteMenuRequest)(nil),     // 6: system.v1.DeleteMenuRequest
-	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 8: google.protobuf.Empty
+	(*Menu)(nil),                          // 0: system.v1.Menu
+	(*ListMenusRequest)(nil),              // 1: system.v1.ListMenusRequest
+	(*ListMenusReply)(nil),                // 2: system.v1.ListMenusReply
+	(*CreateMenuRequest)(nil),             // 3: system.v1.CreateMenuRequest
+	(*GetMenuRequest)(nil),                // 4: system.v1.GetMenuRequest
+	(*UpdateMenuRequest)(nil),             // 5: system.v1.UpdateMenuRequest
+	(*DeleteMenuRequest)(nil),             // 6: system.v1.DeleteMenuRequest
+	(*BatchMigrateMenuModuleRequest)(nil), // 7: system.v1.BatchMigrateMenuModuleRequest
+	(*BatchMigrateMenuModuleReply)(nil),   // 8: system.v1.BatchMigrateMenuModuleReply
+	(*timestamppb.Timestamp)(nil),         // 9: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                 // 10: google.protobuf.Empty
 }
 var file_system_v1_menu_proto_depIdxs = []int32{
-	0, // 0: system.v1.Menu.children:type_name -> system.v1.Menu
-	7, // 1: system.v1.Menu.created_at:type_name -> google.protobuf.Timestamp
-	7, // 2: system.v1.Menu.updated_at:type_name -> google.protobuf.Timestamp
-	0, // 3: system.v1.ListMenusReply.data:type_name -> system.v1.Menu
-	1, // 4: system.v1.MenuService.ListMenus:input_type -> system.v1.ListMenusRequest
-	4, // 5: system.v1.MenuService.GetMenu:input_type -> system.v1.GetMenuRequest
-	3, // 6: system.v1.MenuService.CreateMenu:input_type -> system.v1.CreateMenuRequest
-	5, // 7: system.v1.MenuService.UpdateMenu:input_type -> system.v1.UpdateMenuRequest
-	6, // 8: system.v1.MenuService.DeleteMenu:input_type -> system.v1.DeleteMenuRequest
-	2, // 9: system.v1.MenuService.ListMenus:output_type -> system.v1.ListMenusReply
-	0, // 10: system.v1.MenuService.GetMenu:output_type -> system.v1.Menu
-	0, // 11: system.v1.MenuService.CreateMenu:output_type -> system.v1.Menu
-	0, // 12: system.v1.MenuService.UpdateMenu:output_type -> system.v1.Menu
-	8, // 13: system.v1.MenuService.DeleteMenu:output_type -> google.protobuf.Empty
-	9, // [9:14] is the sub-list for method output_type
-	4, // [4:9] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	0,  // 0: system.v1.Menu.children:type_name -> system.v1.Menu
+	9,  // 1: system.v1.Menu.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 2: system.v1.Menu.updated_at:type_name -> google.protobuf.Timestamp
+	0,  // 3: system.v1.ListMenusReply.data:type_name -> system.v1.Menu
+	1,  // 4: system.v1.MenuService.ListMenus:input_type -> system.v1.ListMenusRequest
+	4,  // 5: system.v1.MenuService.GetMenu:input_type -> system.v1.GetMenuRequest
+	3,  // 6: system.v1.MenuService.CreateMenu:input_type -> system.v1.CreateMenuRequest
+	5,  // 7: system.v1.MenuService.UpdateMenu:input_type -> system.v1.UpdateMenuRequest
+	6,  // 8: system.v1.MenuService.DeleteMenu:input_type -> system.v1.DeleteMenuRequest
+	7,  // 9: system.v1.MenuService.BatchMigrateMenuModule:input_type -> system.v1.BatchMigrateMenuModuleRequest
+	2,  // 10: system.v1.MenuService.ListMenus:output_type -> system.v1.ListMenusReply
+	0,  // 11: system.v1.MenuService.GetMenu:output_type -> system.v1.Menu
+	0,  // 12: system.v1.MenuService.CreateMenu:output_type -> system.v1.Menu
+	0,  // 13: system.v1.MenuService.UpdateMenu:output_type -> system.v1.Menu
+	10, // 14: system.v1.MenuService.DeleteMenu:output_type -> google.protobuf.Empty
+	8,  // 15: system.v1.MenuService.BatchMigrateMenuModule:output_type -> system.v1.BatchMigrateMenuModuleReply
+	10, // [10:16] is the sub-list for method output_type
+	4,  // [4:10] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_system_v1_menu_proto_init() }
@@ -675,7 +836,7 @@ func file_system_v1_menu_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_system_v1_menu_proto_rawDesc), len(file_system_v1_menu_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

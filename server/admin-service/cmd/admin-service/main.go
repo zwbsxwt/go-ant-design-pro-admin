@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"template-v6/server/admin-service/internal/conf"
+	"template-v6/server/admin-service/internal/localenv"
 
 	"github.com/go-kratos/kratos/contrib/otel/v3/tracing"
 	"github.com/go-kratos/kratos/v3"
@@ -50,6 +51,12 @@ func newApp(logger *slog.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 
 func main() {
 	flag.Parse()
+	localenv.LoadFiles(
+		".env.local",
+		".env.dev",
+		"configs/.env.local",
+		"configs/.env.dev",
+	)
 	logger := log.NewLogger(
 		slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 			AddSource: true,

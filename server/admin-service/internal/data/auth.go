@@ -91,7 +91,14 @@ FROM system_users u
 LEFT JOIN system_user_roles ur ON ur.user_id = u.id
 LEFT JOIN system_roles r ON r.id = ur.role_id AND r.status = 'ACTIVE'
 LEFT JOIN system_role_menus rm ON rm.role_id = r.id
-LEFT JOIN system_menus m ON m.id = rm.menu_id AND m.status = 'ACTIVE'
+LEFT JOIN system_menus m ON m.id = rm.menu_id
+  AND m.status = 'ACTIVE'
+  AND EXISTS (
+    SELECT 1
+    FROM system_modules sm
+    WHERE sm.id = m.module_id
+      AND sm.status = 'ACTIVE'
+  )
 WHERE %s
 GROUP BY u.id, u.username, u.display_name, u.password_hash, u.avatar, u.status`, where)
 
@@ -120,6 +127,11 @@ GROUP BY u.id, u.username, u.display_name, u.password_hash, u.avatar, u.status`,
 	user.RoleCodes = splitCSV(rolesCSV)
 	user.MenuPermissions = splitCSV(permissionsCSV)
 	user.ButtonPermissions = splitCSV(buttonPermissionsCSV)
+	modules, err := r.findUserModules(ctx, user.ID)
+	if err != nil {
+		return nil, "", err
+	}
+	user.Modules = modules
 	menus, err := r.findUserMenus(ctx, user.ID)
 	if err != nil {
 		return nil, "", err
@@ -132,15 +144,17 @@ func (r *authRepo) findUserMenus(ctx context.Context, userID string) ([]*biz.Men
 	rows, err := r.data.db.QueryContext(ctx, `
 SELECT DISTINCT
   m.id,
+  m.module_id,
   COALESCE(m.parent_id, ''),
   m.type,
   m.name,
   COALESCE(m.path, ''),
   COALESCE(m.component, ''),
   m.permission_code,
-  COALESCE(m.icon, ''),
+  m.icon,
   m.sort,
   m.status,
+  m.hidden,
   m.created_at,
   m.updated_at
 FROM system_users u
@@ -148,6 +162,7 @@ JOIN system_user_roles ur ON ur.user_id = u.id
 JOIN system_roles r ON r.id = ur.role_id AND r.status = 'ACTIVE'
 JOIN system_role_menus rm ON rm.role_id = r.id
 JOIN system_menus m ON m.id = rm.menu_id AND m.status = 'ACTIVE'
+JOIN system_modules sm ON sm.id = m.module_id AND sm.status = 'ACTIVE'
 WHERE u.id = ?
   AND u.status = 'ACTIVE'
   AND m.type <> 'button'
@@ -159,29 +174,56 @@ ORDER BY m.sort, m.permission_code`, userID)
 
 	menus := make([]*biz.Menu, 0)
 	for rows.Next() {
-		var menu biz.Menu
-		if err := rows.Scan(
-			&menu.ID,
-			&menu.ParentID,
-			&menu.Type,
-			&menu.Name,
-			&menu.Path,
-			&menu.Component,
-			&menu.PermissionCode,
-			&menu.Icon,
-			&menu.Sort,
-			&menu.Status,
-			&menu.CreatedAt,
-			&menu.UpdatedAt,
-		); err != nil {
+		menu, err := scanMenu(rows)
+		if err != nil {
 			return nil, err
 		}
-		menus = append(menus, &menu)
+		menus = append(menus, menu)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 	return menus, nil
+}
+
+func (r *authRepo) findUserModules(ctx context.Context, userID string) ([]*biz.Module, error) {
+	rows, err := r.data.db.QueryContext(ctx, `
+SELECT DISTINCT
+  sm.id,
+  sm.code,
+  sm.name,
+  COALESCE(sm.icon, ''),
+  sm.sort,
+  sm.status,
+  sm.hidden,
+  sm.created_at,
+  sm.updated_at
+FROM system_users u
+JOIN system_user_roles ur ON ur.user_id = u.id
+JOIN system_roles r ON r.id = ur.role_id AND r.status = 'ACTIVE'
+JOIN system_role_menus rm ON rm.role_id = r.id
+JOIN system_menus m ON m.id = rm.menu_id AND m.status = 'ACTIVE' AND m.type <> 'button'
+JOIN system_modules sm ON sm.id = m.module_id AND sm.status = 'ACTIVE' AND sm.hidden = FALSE
+WHERE u.id = ?
+  AND u.status = 'ACTIVE'
+ORDER BY sm.sort, sm.code`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	modules := make([]*biz.Module, 0)
+	for rows.Next() {
+		module, err := scanModule(rows)
+		if err != nil {
+			return nil, err
+		}
+		modules = append(modules, module)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return modules, nil
 }
 
 func randomToken() (string, error) {

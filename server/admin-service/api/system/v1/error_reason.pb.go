@@ -40,6 +40,10 @@ const (
 	ErrorReason_USER_DUPLICATE_USERNAME        ErrorReason = 13
 	ErrorReason_USER_INVALID_ARGUMENT          ErrorReason = 14
 	ErrorReason_USER_CANNOT_DELETE_SELF        ErrorReason = 15
+	ErrorReason_MODULE_NOT_FOUND               ErrorReason = 16
+	ErrorReason_MODULE_DUPLICATE_CODE          ErrorReason = 17
+	ErrorReason_MODULE_HAS_MENUS               ErrorReason = 18
+	ErrorReason_MODULE_INVALID_ARGUMENT        ErrorReason = 19
 )
 
 // Enum value maps for ErrorReason.
@@ -61,6 +65,10 @@ var (
 		13: "USER_DUPLICATE_USERNAME",
 		14: "USER_INVALID_ARGUMENT",
 		15: "USER_CANNOT_DELETE_SELF",
+		16: "MODULE_NOT_FOUND",
+		17: "MODULE_DUPLICATE_CODE",
+		18: "MODULE_HAS_MENUS",
+		19: "MODULE_INVALID_ARGUMENT",
 	}
 	ErrorReason_value = map[string]int32{
 		"SYSTEM_UNSPECIFIED":             0,
@@ -79,6 +87,10 @@ var (
 		"USER_DUPLICATE_USERNAME":        13,
 		"USER_INVALID_ARGUMENT":          14,
 		"USER_CANNOT_DELETE_SELF":        15,
+		"MODULE_NOT_FOUND":               16,
+		"MODULE_DUPLICATE_CODE":          17,
+		"MODULE_HAS_MENUS":               18,
+		"MODULE_INVALID_ARGUMENT":        19,
 	}
 )
 
@@ -113,7 +125,7 @@ var File_system_v1_error_reason_proto protoreflect.FileDescriptor
 
 const file_system_v1_error_reason_proto_rawDesc = "" +
 	"\n" +
-	"\x1csystem/v1/error_reason.proto\x12\tsystem.v1*\x9e\x03\n" +
+	"\x1csystem/v1/error_reason.proto\x12\tsystem.v1*\x82\x04\n" +
 	"\vErrorReason\x12\x16\n" +
 	"\x12SYSTEM_UNSPECIFIED\x10\x00\x12\x17\n" +
 	"\x13SYSTEM_UNAUTHORIZED\x10\x01\x12\x12\n" +
@@ -131,7 +143,11 @@ const file_system_v1_error_reason_proto_rawDesc = "" +
 	"\x0eUSER_NOT_FOUND\x10\f\x12\x1b\n" +
 	"\x17USER_DUPLICATE_USERNAME\x10\r\x12\x19\n" +
 	"\x15USER_INVALID_ARGUMENT\x10\x0e\x12\x1b\n" +
-	"\x17USER_CANNOT_DELETE_SELF\x10\x0fBN\n" +
+	"\x17USER_CANNOT_DELETE_SELF\x10\x0f\x12\x14\n" +
+	"\x10MODULE_NOT_FOUND\x10\x10\x12\x19\n" +
+	"\x15MODULE_DUPLICATE_CODE\x10\x11\x12\x14\n" +
+	"\x10MODULE_HAS_MENUS\x10\x12\x12\x1b\n" +
+	"\x17MODULE_INVALID_ARGUMENT\x10\x13BN\n" +
 	"\tsystem.v1P\x01Z1template-v6/server/admin-service/api/system/v1;v1\xa2\x02\vAPISystemV1b\x06proto3"
 
 var (

@@ -71,6 +71,17 @@ message CurrentUser {
   repeated string button_permissions = 9;
   repeated string role_codes = 10;
   repeated CurrentUserMenu menus = 11;
+  repeated CurrentUserModule modules = 12;
+}
+
+message CurrentUserModule {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  string icon = 4;
+  int32 sort = 5;
+  string status = 6;
+  bool hidden = 7;
 }
 
 message CurrentUserMenu {
@@ -85,6 +96,8 @@ message CurrentUserMenu {
   int32 sort = 9;
   string status = 10;
   repeated CurrentUserMenu children = 11;
+  string module_id = 12;
+  bool hidden = 13;
 }
 
 message OutLoginRequest {}

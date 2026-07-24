@@ -18,6 +18,7 @@ var _ = new(context.Context)
 
 const _ = http.SupportPackageIsVersion3
 
+const OperationMenuServiceBatchMigrateMenuModule = "/system.v1.MenuService/BatchMigrateMenuModule"
 const OperationMenuServiceCreateMenu = "/system.v1.MenuService/CreateMenu"
 const OperationMenuServiceDeleteMenu = "/system.v1.MenuService/DeleteMenu"
 const OperationMenuServiceGetMenu = "/system.v1.MenuService/GetMenu"
@@ -25,6 +26,7 @@ const OperationMenuServiceListMenus = "/system.v1.MenuService/ListMenus"
 const OperationMenuServiceUpdateMenu = "/system.v1.MenuService/UpdateMenu"
 
 type MenuServiceHTTPServer interface {
+	BatchMigrateMenuModule(context.Context, *BatchMigrateMenuModuleRequest) (*BatchMigrateMenuModuleReply, error)
 	CreateMenu(context.Context, *CreateMenuRequest) (*Menu, error)
 	DeleteMenu(context.Context, *DeleteMenuRequest) (*emptypb.Empty, error)
 	GetMenu(context.Context, *GetMenuRequest) (*Menu, error)
@@ -39,6 +41,7 @@ func RegisterMenuServiceHTTPServer(s *http.Server, srv MenuServiceHTTPServer) {
 	r.Handle("POST", "/api/system/menus", _MenuService_CreateMenu0_HTTP_Handler(srv))
 	r.Handle("PUT", "/api/system/menus/{id}", _MenuService_UpdateMenu0_HTTP_Handler(srv))
 	r.Handle("DELETE", "/api/system/menus/{id}", _MenuService_DeleteMenu0_HTTP_Handler(srv))
+	r.Handle("POST", "/api/system/menus/batch-migrate-module", _MenuService_BatchMigrateMenuModule0_HTTP_Handler(srv))
 }
 
 func _MenuService_ListMenus0_HTTP_Handler(srv MenuServiceHTTPServer) func(ctx http.Context) error {
@@ -145,7 +148,27 @@ func _MenuService_DeleteMenu0_HTTP_Handler(srv MenuServiceHTTPServer) func(ctx h
 	}
 }
 
+func _MenuService_BatchMigrateMenuModule0_HTTP_Handler(srv MenuServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in BatchMigrateMenuModuleRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMenuServiceBatchMigrateMenuModule)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.BatchMigrateMenuModule(ctx, req.(*BatchMigrateMenuModuleRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*BatchMigrateMenuModuleReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type MenuServiceHTTPClient interface {
+	BatchMigrateMenuModule(ctx context.Context, req *BatchMigrateMenuModuleRequest, opts ...http.CallOption) (rsp *BatchMigrateMenuModuleReply, err error)
 	CreateMenu(ctx context.Context, req *CreateMenuRequest, opts ...http.CallOption) (rsp *Menu, err error)
 	DeleteMenu(ctx context.Context, req *DeleteMenuRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	GetMenu(ctx context.Context, req *GetMenuRequest, opts ...http.CallOption) (rsp *Menu, err error)
@@ -159,6 +182,23 @@ type MenuServiceHTTPClientImpl struct {
 
 func NewMenuServiceHTTPClient(client *http.Client) MenuServiceHTTPClient {
 	return &MenuServiceHTTPClientImpl{client}
+}
+
+func (c *MenuServiceHTTPClientImpl) BatchMigrateMenuModule(ctx context.Context, in *BatchMigrateMenuModuleRequest, opts ...http.CallOption) (*BatchMigrateMenuModuleReply, error) {
+	var out BatchMigrateMenuModuleReply
+	pattern := "/api/system/menus/batch-migrate-module"
+	path := http.BuildPath(pattern, in)
+	opts = append([]http.CallOption{
+		http.Accept("application/protojson"),
+		http.ContentType("application/protojson"),
+		http.Operation(OperationMenuServiceBatchMigrateMenuModule),
+		http.PathTemplate(pattern),
+	}, opts...)
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
 }
 
 func (c *MenuServiceHTTPClientImpl) CreateMenu(ctx context.Context, in *CreateMenuRequest, opts ...http.CallOption) (*Menu, error) {

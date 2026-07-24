@@ -107,7 +107,27 @@ func convertCurrentUser(user *biz.AuthUser) *v1.CurrentUser {
 		ButtonPermissions: append([]string(nil), user.ButtonPermissions...),
 		RoleCodes:         append([]string(nil), user.RoleCodes...),
 		Menus:             convertCurrentUserMenus(user.Menus),
+		Modules:           convertCurrentUserModules(user.Modules),
 	}
+}
+
+func convertCurrentUserModules(modules []*biz.Module) []*v1.CurrentUserModule {
+	result := make([]*v1.CurrentUserModule, 0, len(modules))
+	for _, module := range modules {
+		if module == nil {
+			continue
+		}
+		result = append(result, &v1.CurrentUserModule{
+			Id:     module.ID,
+			Code:   module.Code,
+			Name:   module.Name,
+			Icon:   module.Icon,
+			Sort:   module.Sort,
+			Status: module.Status,
+			Hidden: module.Hidden,
+		})
+	}
+	return result
 }
 
 func convertCurrentUserMenus(menus []*biz.Menu) []*v1.CurrentUserMenu {
@@ -118,6 +138,7 @@ func convertCurrentUserMenus(menus []*biz.Menu) []*v1.CurrentUserMenu {
 		}
 		result = append(result, &v1.CurrentUserMenu{
 			Id:             menu.ID,
+			ModuleId:       menu.ModuleID,
 			ParentId:       menu.ParentID,
 			Type:           menu.Type,
 			Name:           menu.Name,
@@ -127,6 +148,7 @@ func convertCurrentUserMenus(menus []*biz.Menu) []*v1.CurrentUserMenu {
 			Icon:           menu.Icon,
 			Sort:           menu.Sort,
 			Status:         menu.Status,
+			Hidden:         menu.Hidden,
 			Children:       convertCurrentUserMenus(menu.Children),
 		})
 	}

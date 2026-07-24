@@ -1,5 +1,10 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
+import {
+  LoginForm,
+  ProFormCheckbox,
+  ProFormText,
+} from '@ant-design/pro-components';
+import appConfig from '@root/config/appConfig';
 import { Helmet, SelectLang, useIntl, useModel } from '@umijs/max';
 import { Alert, App, Button } from 'antd';
 import { createStyles } from 'antd-style';
@@ -76,37 +81,45 @@ const Login: React.FC = () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
       startTransition(() => {
-        setInitialState((s) => ({
-          ...s,
+        setInitialState((state) => ({
+          ...state,
           currentUser: userInfo,
         }));
       });
     }
+    return userInfo;
   };
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       const msg = await loginAccount({ ...values, type: 'account' });
-      if (msg.status === 'ok') {
-        message.success(
-          intl.formatMessage({
-            id: 'pages.login.success',
-            defaultMessage: '登录成功',
-          }),
-        );
-        await fetchUserInfo();
-        const urlParams = new URL(window.location.href).searchParams;
-        window.location.href = getSafeRedirectUrl(urlParams.get('redirect'));
+      if (msg.status !== 'ok') {
+        setUserLoginState(msg);
         return;
       }
-      setUserLoginState(msg);
-    } catch {
+
+      const userInfo = await fetchUserInfo();
+      if (!userInfo) {
+        message.error('登录成功，但获取当前用户失败，请刷新后重试');
+        return;
+      }
+
+      message.success(
+        intl.formatMessage({
+          id: 'pages.login.success',
+          defaultMessage: '登录成功',
+        }),
+      );
+      const urlParams = new URL(window.location.href).searchParams;
+      window.location.href = getSafeRedirectUrl(urlParams.get('redirect'));
+    } catch (error) {
       message.error(
         intl.formatMessage({
           id: 'pages.login.failure',
           defaultMessage: '登录失败，请重试',
         }),
       );
+      console.error('login failed', error);
     }
   };
 
@@ -134,10 +147,8 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
           logo={<img alt="logo" src="/logo.svg" />}
-          title="go-ant-design-pro-admin"
-          subTitle={intl.formatMessage({
-            id: 'pages.layouts.userLayout.title',
-          })}
+          title={appConfig.name}
+          subTitle={appConfig.description}
           initialValues={{
             autoLogin: true,
           }}
@@ -146,7 +157,7 @@ const Login: React.FC = () => {
           }}
         >
           {userLoginState.status === 'error' && (
-            <LoginMessage content="账户或密码错误，默认账号 admin/ant.design 或 user/ant.design" />
+            <LoginMessage content="用户名或密码错误" />
           )}
           <ProFormText
             name="username"
@@ -154,7 +165,7 @@ const Login: React.FC = () => {
               size: 'large',
               prefix: <UserOutlined />,
             }}
-            placeholder="用户名: admin 或 user"
+            placeholder="用户名"
             rules={[
               {
                 required: true,
@@ -168,7 +179,7 @@ const Login: React.FC = () => {
               size: 'large',
               prefix: <LockOutlined />,
             }}
-            placeholder="密码: ant.design"
+            placeholder="密码"
             rules={[
               {
                 required: true,

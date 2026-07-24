@@ -1,6 +1,7 @@
 import { PageContainer } from '@ant-design/pro-components';
 import XMarkdown from '@ant-design/x-markdown';
 import '@ant-design/x-markdown/es/XMarkdown/index.css';
+import appConfig from '@root/config/appConfig';
 import enUS from '@root/docs/cheatsheet.en-US.md';
 import zhCN from '@root/docs/cheatsheet.zh-CN.md';
 import { getLocale, useIntl, useModel } from '@umijs/max';
@@ -155,20 +156,10 @@ const Welcome: React.FC = () => {
     <PageContainer
       title={
         <>
-          {intl.formatMessage(
-            {
-              id: 'pages.welcome.celebrationTitle',
-              defaultMessage: '欢迎使用 go-ant-design-pro-admin {v6}',
-            },
-            {
-              v6: (
-                <span key="v6" className="welcome-gradient-title">
-                  V6
-                </span>
-              ),
-            },
-          )}
-          🎉
+          欢迎使用 {appConfig.name}{' '}
+          <span key="v6" className="welcome-gradient-title">
+            V6
+          </span>
         </>
       }
     >

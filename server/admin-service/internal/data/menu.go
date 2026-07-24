@@ -21,7 +21,7 @@ func NewMenuRepo(data *Data) biz.MenuRepo {
 
 func (r *menuRepo) ListMenus(ctx context.Context) ([]*biz.Menu, error) {
 	rows, err := r.data.db.QueryContext(ctx, `
-SELECT id, parent_id, type, name, path, component, permission_code, icon, sort, status, created_at, updated_at
+SELECT id, module_id, parent_id, type, name, path, component, permission_code, icon, sort, status, hidden, created_at, updated_at
 FROM system_menus
 ORDER BY COALESCE(parent_id, ''), sort, permission_code`)
 	if err != nil {
@@ -45,7 +45,7 @@ ORDER BY COALESCE(parent_id, ''), sort, permission_code`)
 
 func (r *menuRepo) GetMenu(ctx context.Context, id string) (*biz.Menu, error) {
 	row := r.data.db.QueryRowContext(ctx, `
-SELECT id, parent_id, type, name, path, component, permission_code, icon, sort, status, created_at, updated_at
+SELECT id, module_id, parent_id, type, name, path, component, permission_code, icon, sort, status, hidden, created_at, updated_at
 FROM system_menus
 WHERE id = ?`, id)
 	menu, err := scanMenu(row)
@@ -62,9 +62,10 @@ func (r *menuRepo) CreateMenu(ctx context.Context, menu *biz.Menu) (*biz.Menu, e
 	menu.ID = uuid.NewString()
 	now := time.Now()
 	if _, err := r.data.db.ExecContext(ctx, `
-INSERT INTO system_menus (id, parent_id, type, name, path, component, permission_code, icon, sort, status, created_at, updated_at)
-VALUES (?, NULLIF(?, ''), ?, ?, NULLIF(?, ''), NULLIF(?, ''), ?, NULLIF(?, ''), ?, ?, ?, ?)`,
+INSERT INTO system_menus (id, module_id, parent_id, type, name, path, component, permission_code, icon, sort, status, hidden, created_at, updated_at)
+VALUES (?, ?, NULLIF(?, ''), ?, ?, NULLIF(?, ''), NULLIF(?, ''), ?, NULLIF(?, ''), ?, ?, ?, ?, ?)`,
 		menu.ID,
+		menu.ModuleID,
 		menu.ParentID,
 		menu.Type,
 		menu.Name,
@@ -74,6 +75,7 @@ VALUES (?, NULLIF(?, ''), ?, ?, NULLIF(?, ''), NULLIF(?, ''), ?, NULLIF(?, ''), 
 		menu.Icon,
 		menu.Sort,
 		menu.Status,
+		menu.Hidden,
 		now,
 		now,
 	); err != nil {
@@ -85,7 +87,8 @@ VALUES (?, NULLIF(?, ''), ?, ?, NULLIF(?, ''), NULLIF(?, ''), ?, NULLIF(?, ''), 
 func (r *menuRepo) UpdateMenu(ctx context.Context, menu *biz.Menu) (*biz.Menu, error) {
 	result, err := r.data.db.ExecContext(ctx, `
 UPDATE system_menus
-SET parent_id = NULLIF(?, ''),
+SET module_id = ?,
+    parent_id = NULLIF(?, ''),
     type = ?,
     name = ?,
     path = NULLIF(?, ''),
@@ -93,8 +96,10 @@ SET parent_id = NULLIF(?, ''),
     permission_code = ?,
     icon = NULLIF(?, ''),
     sort = ?,
-    status = ?
+    status = ?,
+    hidden = ?
 WHERE id = ?`,
+		menu.ModuleID,
 		menu.ParentID,
 		menu.Type,
 		menu.Name,
@@ -104,6 +109,7 @@ WHERE id = ?`,
 		menu.Icon,
 		menu.Sort,
 		menu.Status,
+		menu.Hidden,
 		menu.ID,
 	)
 	if err != nil {
@@ -159,6 +165,28 @@ WHERE menu_id = ?`, id).Scan(&count); err != nil {
 	return count > 0, nil
 }
 
+func (r *menuRepo) BatchMigrateModule(ctx context.Context, ids []string, targetModuleID string) error {
+	tx, err := r.data.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	for _, id := range ids {
+		result, err := tx.ExecContext(ctx, `
+UPDATE system_menus
+SET module_id = ?
+WHERE id = ?`, targetModuleID, id)
+		if err != nil {
+			return err
+		}
+		if affected, err := result.RowsAffected(); err == nil && affected == 0 {
+			return biz.ErrMenuNotFound
+		}
+	}
+	return tx.Commit()
+}
+
 type menuScanner interface {
 	Scan(dest ...any) error
 }
@@ -171,6 +199,7 @@ func scanMenu(scanner menuScanner) (*biz.Menu, error) {
 	var icon sql.NullString
 	if err := scanner.Scan(
 		&menu.ID,
+		&menu.ModuleID,
 		&parentID,
 		&menu.Type,
 		&menu.Name,
@@ -180,6 +209,7 @@ func scanMenu(scanner menuScanner) (*biz.Menu, error) {
 		&icon,
 		&menu.Sort,
 		&menu.Status,
+		&menu.Hidden,
 		&menu.CreatedAt,
 		&menu.UpdatedAt,
 	); err != nil {

@@ -1,3 +1,4 @@
+import appConfig from '@root/config/appConfig';
 import { createStyles } from 'antd-style';
 import React from 'react';
 
@@ -18,7 +19,7 @@ const Footer: React.FC = () => {
 
   return (
     <div className={styles.footer}>
-      go-ant-design-pro-admin &copy; {year}
+      {appConfig.name} &copy; {year}
     </div>
   );
 };

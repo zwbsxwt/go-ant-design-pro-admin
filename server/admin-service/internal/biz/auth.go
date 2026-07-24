@@ -32,6 +32,7 @@ type AuthUser struct {
 	Avatar            string
 	MenuPermissions   []string
 	ButtonPermissions []string
+	Modules           []*Module
 	Menus             []*Menu
 }
 

@@ -7,7 +7,7 @@ import {
   type ProColumns,
 } from '@ant-design/pro-components';
 import { useAccess } from '@umijs/max';
-import { App, Button, Modal, Space, Tag } from 'antd';
+import { App, Avatar, Button, Modal, Space, Tag } from 'antd';
 import React, { useMemo, useRef, useState } from 'react';
 import { listRoles } from '@/services/system/role';
 import {
@@ -97,6 +97,17 @@ const UserManagement: React.FC = () => {
   };
 
   const columns: ProColumns<API.SystemUser>[] = [
+    {
+      title: '头像',
+      dataIndex: 'avatar',
+      width: 72,
+      search: false,
+      render: (_, record) => (
+        <Avatar size={32} src={record.avatar}>
+          {(record.displayName || record.username || '用').slice(0, 1)}
+        </Avatar>
+      ),
+    },
     {
       title: '用户名',
       dataIndex: 'username',

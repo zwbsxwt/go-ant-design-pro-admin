@@ -2,13 +2,12 @@ export default {
   'pages.layouts.userLayout.title':
     'go-ant-design-pro-admin admin framework template',
   'pages.login.accountLogin.tab': 'アカウントログイン',
-  'pages.login.accountLogin.errorMessage':
-    'ユーザー名/パスワードが正しくありません(admin/ant.design)',
+  'pages.login.accountLogin.errorMessage': '????????',
   'pages.login.failure': 'ログインに失敗したら、もう一度試してください!',
   'pages.login.success': 'ログイン成功!',
   'pages.login.username.placeholder': 'ユーザー名：adminまたはuser',
   'pages.login.username.required': 'ユーザー名を入力してください！',
-  'pages.login.password.placeholder': 'パスワード：ant.design',
+  'pages.login.password.placeholder': '??',
   'pages.login.password.required': 'パスワードを入力してください！',
   'pages.login.phoneLogin.tab': '電話ログイン',
   'pages.login.phoneLogin.errorMessage': '検証コードエラー',

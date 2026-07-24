@@ -1,28 +1,36 @@
-import { LogoutOutlined, SkinOutlined } from '@ant-design/icons';
-import { history, useModel } from '@umijs/max';
-import type { MenuProps } from 'antd';
-import { Spin } from 'antd';
-import React, { startTransition } from 'react';
-import { logoutAccount } from '@/services/admin/auth';
-import HeaderDropdown from '../HeaderDropdown';
+import { LogoutOutlined, SkinOutlined, UserOutlined } from "@ant-design/icons";
+import { history, useModel } from "@umijs/max";
+import type { MenuProps } from "antd";
+import { Spin } from "antd";
+import React, { startTransition } from "react";
+import { logoutAccount } from "@/services/admin/auth";
+import HeaderDropdown from "../HeaderDropdown";
 
 type GlobalHeaderRightProps = {
   children?: React.ReactNode;
 };
 
-const menuItems: MenuProps['items'] = [
+const menuItems: MenuProps["items"] = [
   {
-    key: 'theme',
+    key: "profile",
+    icon: <UserOutlined />,
+    label: "个人中心",
+  },
+  {
+    type: "divider" as const,
+  },
+  {
+    key: "theme",
     icon: <SkinOutlined />,
-    label: '主题设置',
+    label: "主题设置",
   },
   {
-    type: 'divider' as const,
+    type: "divider" as const,
   },
   {
-    key: 'logout',
+    key: "logout",
     icon: <LogoutOutlined />,
-    label: '退出登录',
+    label: "退出登录",
   },
 ];
 
@@ -37,10 +45,10 @@ const loginOut = async () => {
   const searchParams = new URLSearchParams({
     redirect: pathname + search,
   });
-  const redirect = urlParams.get('redirect');
-  if (window.location.pathname !== '/user/login' && !redirect) {
+  const redirect = urlParams.get("redirect");
+  if (window.location.pathname !== "/user/login" && !redirect) {
     history.replace({
-      pathname: '/user/login',
+      pathname: "/user/login",
       search: searchParams.toString(),
     });
   }
@@ -49,18 +57,22 @@ const loginOut = async () => {
 export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
   children,
 }) => {
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { initialState, setInitialState } = useModel("@@initialState");
 
-  const onMenuClick: MenuProps['onClick'] = (event) => {
+  const onMenuClick: MenuProps["onClick"] = (event) => {
     const { key } = event;
-    if (key === 'logout') {
+    if (key === "profile") {
+      history.push("/account/profile");
+      return;
+    }
+    if (key === "logout") {
       startTransition(() => {
         setInitialState((s) => ({ ...s, currentUser: undefined }));
       });
       loginOut();
       return;
     }
-    if (key === 'theme') {
+    if (key === "theme") {
       setInitialState((s) => ({ ...s, settingDrawerOpen: true }));
     }
   };

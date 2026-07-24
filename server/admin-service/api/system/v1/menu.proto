@@ -44,6 +44,13 @@ service MenuService {
       delete: "/api/system/menus/{id}"
     };
   }
+
+  rpc BatchMigrateMenuModule(BatchMigrateMenuModuleRequest) returns (BatchMigrateMenuModuleReply) {
+    option (google.api.http) = {
+      post: "/api/system/menus/batch-migrate-module"
+      body: "*"
+    };
+  }
 }
 
 message Menu {
@@ -60,6 +67,8 @@ message Menu {
   repeated Menu children = 11;
   google.protobuf.Timestamp created_at = 12;
   google.protobuf.Timestamp updated_at = 13;
+  string module_id = 14;
+  bool hidden = 15;
 }
 
 message ListMenusRequest {}
@@ -78,6 +87,8 @@ message CreateMenuRequest {
   string icon = 7;
   int32 sort = 8;
   string status = 9;
+  string module_id = 10;
+  bool hidden = 11;
 }
 
 message GetMenuRequest {
@@ -95,8 +106,19 @@ message UpdateMenuRequest {
   string icon = 8;
   int32 sort = 9;
   string status = 10;
+  string module_id = 11;
+  bool hidden = 12;
 }
 
 message DeleteMenuRequest {
   string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message BatchMigrateMenuModuleRequest {
+  repeated string menu_ids = 1 [(google.api.field_behavior) = REQUIRED];
+  string target_module_id = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message BatchMigrateMenuModuleReply {
+  bool success = 1;
 }

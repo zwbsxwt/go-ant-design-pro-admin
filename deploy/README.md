@@ -25,6 +25,26 @@ Development defaults:
 These values are for local template verification only. Production secrets must
 not be committed to Git.
 
+## Database Initialization
+
+`docker-compose.local.yml` mounts the backend migration and seed SQL files into
+MySQL's `/docker-entrypoint-initdb.d/` directory:
+
+- `server/admin-service/internal/data/migrations/001_init_rbac.sql`
+- `server/admin-service/internal/data/seeds/001_seed_rbac.sql`
+
+Docker runs these files only when the MySQL data volume is created for the first
+time. The Kratos backend also embeds and executes the same SQL on startup, so an
+existing local database can still be repaired or updated idempotently.
+
+To rebuild a local database from a clean seed:
+
+```powershell
+docker compose -f deploy/docker-compose.local.yml down
+docker volume rm deploy_mysql-data
+docker compose -f deploy/docker-compose.local.yml up -d mysql redis
+```
+
 ## Verify Connections
 
 ```powershell

@@ -1,27 +1,38 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
-import type { MenuDataItem } from '@ant-design/pro-components';
-import { SettingDrawer } from '@ant-design/pro-components';
-import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import React from 'react';
-
-// Initialize dayjs plugins globally
-dayjs.extend(relativeTime);
-
+import type {
+  Settings as LayoutSettings,
+  MenuDataItem,
+} from "@ant-design/pro-components";
+import { SettingDrawer } from "@ant-design/pro-components";
+import type { RequestConfig, RunTimeLayoutConfig } from "@umijs/max";
+import { history, Link } from "@umijs/max";
+import { Tabs } from "antd";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import React from "react";
 import {
   AvatarDropdown,
   ErrorBoundary,
   Footer,
   OfflineBanner,
-} from '@/components';
-import { queryCurrentUser } from '@/services/admin/auth';
-import { clearAuthState } from '@/utils/authState';
-import defaultSettings from '../config/defaultSettings';
-import { errorConfig } from './requestErrorConfig';
+} from "@/components";
+import { queryCurrentUser } from "@/services/admin/auth";
+import { clearAuthState } from "@/utils/authState";
+import defaultSettings from "../config/defaultSettings";
+import { errorConfig } from "./requestErrorConfig";
 
-const loginPath = '/user/login';
+dayjs.extend(relativeTime);
+
+const loginPath = "/user/login";
+const selectedModuleStorageKey = "go-ant-design-pro-admin:selected-module-id";
+
+type InitialState = {
+  settings?: Partial<LayoutSettings>;
+  currentUser?: API.CurrentUser;
+  selectedModuleId?: string;
+  loading?: boolean;
+  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  settingDrawerOpen?: boolean;
+};
 
 type WhitelistMenuDataItem = MenuDataItem & {
   permissionCode?: string;
@@ -30,16 +41,7 @@ type WhitelistMenuDataItem = MenuDataItem & {
   children?: WhitelistMenuDataItem[];
 };
 
-/**
- * @see https://umijs.org/docs/api/runtime-config#getinitialstate
- * */
-export async function getInitialState(): Promise<{
-  settings?: Partial<LayoutSettings>;
-  currentUser?: API.CurrentUser;
-  loading?: boolean;
-  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
-  settingDrawerOpen?: boolean;
-}> {
+export async function getInitialState(): Promise<InitialState> {
   const fetchUserInfo = async () => {
     try {
       const msg = await queryCurrentUser({
@@ -50,22 +52,27 @@ export async function getInitialState(): Promise<{
       clearAuthState();
       const { pathname, search, hash } = history.location;
       history.replace(
-        `${loginPath}?redirect=${encodeURIComponent(pathname + search + hash)}`,
+        `${loginPath}?redirect=${encodeURIComponent(pathname + search + hash)}`
       );
     }
     return undefined;
   };
-  // 如果不是登录页面，执行
+
   const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
       currentUser,
+      selectedModuleId: resolveSelectedModuleId(
+        currentUser?.modules,
+        getStoredSelectedModuleId()
+      ),
       settings: defaultSettings as Partial<LayoutSettings>,
       settingDrawerOpen: false,
     };
   }
+
   return {
     fetchUserInfo,
     settings: defaultSettings as Partial<LayoutSettings>,
@@ -73,117 +80,139 @@ export async function getInitialState(): Promise<{
   };
 }
 
-// ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({
   initialState,
   setInitialState,
-}) => {
-  return {
-    menuItemRender: (item, dom) => {
-      if (item.path) {
-        return (
-          <Link to={item.path} prefetch>
-            {dom}
-          </Link>
-        );
-      }
-      return dom;
-    },
-    menuDataRender: (menuData) =>
-      buildDatabaseBackedMenuData(
-        menuData as WhitelistMenuDataItem[],
-        initialState?.currentUser?.menus,
-      ),
-    actionsRender: () => [],
-    avatarProps: {
-      src: initialState?.currentUser?.avatar,
-      title: 'ProUser',
-      render: (_, avatarChildren) => (
-        <AvatarDropdown>{avatarChildren}</AvatarDropdown>
-      ),
-    },
-    // waterMarkProps: {
-    //   content: initialState?.currentUser?.name,
-    // },
-    footerRender: () => <Footer />,
-    onPageChange: () => {
-      const { location } = history;
-      // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.replace(
-          `${loginPath}?redirect=${encodeURIComponent(location.pathname + location.search + location.hash)}`,
-        );
-      }
-    },
-    bgLayoutImgList: [
-      {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',
-        left: 85,
-        bottom: 100,
-        height: '303px',
-      },
-      {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr',
-        bottom: -68,
-        right: -45,
-        height: '303px',
-      },
-      {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr',
-        bottom: 0,
-        left: 0,
-        width: '331px',
-      },
-    ],
-    links: [],
-    // Replace ProLayout's default ErrorBoundary with our offline-aware version,
-    // so chunk load errors show friendly messages instead of "Something went wrong."
-    ErrorBoundary,
-    menuHeaderRender: undefined,
-    // 自定义 403 页面
-    // unAccessible: <div>unAccessible</div>,
-    // 增加一个 loading 的状态
-    childrenRender: (children) => {
-      // if (initialState?.loading) return <PageLoading />;
+}) => ({
+  menuItemRender: (item, dom) => {
+    if (item.path) {
       return (
-        <>
-          {children}
-          <SettingDrawer
-            disableUrlParams
-            enableDarkTheme
-            collapse={initialState?.settingDrawerOpen}
-            onCollapseChange={(open) => {
-              setInitialState((s) => ({
-                ...s,
-                settingDrawerOpen: open,
-              }));
-            }}
-            settings={initialState?.settings}
-            onSettingChange={(settings) => {
-              setInitialState((s) => ({
-                ...s,
-                settings,
-              }));
-            }}
-          />
-        </>
+        <Link to={item.path} prefetch>
+          {dom}
+        </Link>
       );
+    }
+    return dom;
+  },
+  menuDataRender: (menuData) =>
+    buildDatabaseBackedMenuData(
+      menuData as WhitelistMenuDataItem[],
+      initialState?.currentUser?.menus,
+      initialState?.selectedModuleId
+    ),
+  headerContentRender: () =>
+    renderModuleTabs({
+      modules: initialState?.currentUser?.modules,
+      value: resolveSelectedModuleId(
+        initialState?.currentUser?.modules,
+        initialState?.selectedModuleId
+      ),
+      onChange: (moduleId) => {
+        setStoredSelectedModuleId(moduleId);
+        setInitialState((state) => ({
+          ...state,
+          selectedModuleId: moduleId,
+        }));
+        const firstMenuPath = findFirstMenuPathForModule(
+          initialState?.currentUser?.menus || [],
+          moduleId
+        );
+        if (firstMenuPath) {
+          history.push(firstMenuPath);
+        }
+      },
+    }),
+  actionsRender: () => [],
+  avatarProps: {
+    src: initialState?.currentUser?.avatar,
+    title:
+      initialState?.currentUser?.name ||
+      initialState?.currentUser?.username ||
+      "用户",
+    render: (_, avatarChildren) => (
+      <AvatarDropdown>{avatarChildren}</AvatarDropdown>
+    ),
+  },
+  footerRender: () => <Footer />,
+  onPageChange: () => {
+    const { location } = history;
+    if (!initialState?.currentUser && location.pathname !== loginPath) {
+      history.replace(
+        `${loginPath}?redirect=${encodeURIComponent(
+          location.pathname + location.search + location.hash
+        )}`
+      );
+      return;
+    }
+    if (
+      initialState?.currentUser &&
+      !isAuthorizedPath(location.pathname, initialState.currentUser)
+    ) {
+      history.replace("/exception/403");
+    }
+  },
+  bgLayoutImgList: [
+    {
+      src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr",
+      left: 85,
+      bottom: 100,
+      height: "303px",
     },
-    ...initialState?.settings,
-  };
-};
+    {
+      src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr",
+      bottom: -68,
+      right: -45,
+      height: "303px",
+    },
+    {
+      src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr",
+      bottom: 0,
+      left: 0,
+      width: "331px",
+    },
+  ],
+  links: [],
+  ErrorBoundary,
+  menuHeaderRender: undefined,
+  childrenRender: (children) => (
+    <>
+      {children}
+      <SettingDrawer
+        disableUrlParams
+        enableDarkTheme
+        collapse={initialState?.settingDrawerOpen}
+        onCollapseChange={(open) => {
+          setInitialState((state) => ({
+            ...state,
+            settingDrawerOpen: open,
+          }));
+        }}
+        settings={initialState?.settings}
+        onSettingChange={(settings) => {
+          setInitialState((state) => ({
+            ...state,
+            settings,
+          }));
+        }}
+      />
+    </>
+  ),
+  ...initialState?.settings,
+});
 
 function buildDatabaseBackedMenuData(
   staticMenus: WhitelistMenuDataItem[],
   currentUserMenus?: API.CurrentUserMenu[],
+  selectedModuleId?: string
 ): MenuDataItem[] {
   if (!currentUserMenus || currentUserMenus.length === 0) {
     return staticMenus;
   }
 
   const whitelist = createRouteWhitelist(staticMenus);
+  const scopedMenus = filterMenusByModule(currentUserMenus, selectedModuleId);
   return currentUserMenus
-    .map((menu) => toMenuDataItem(menu, whitelist))
+    .map((menu) => toMenuDataItem(menu, whitelist, scopedMenus))
     .filter(Boolean) as MenuDataItem[];
 }
 
@@ -210,21 +239,28 @@ function createRouteWhitelist(staticMenus: WhitelistMenuDataItem[]) {
 function toMenuDataItem(
   menu: API.CurrentUserMenu,
   whitelist: ReturnType<typeof createRouteWhitelist>,
+  allowedMenus?: Set<string>
 ): MenuDataItem | undefined {
-  if (menu.status && menu.status !== 'ACTIVE') {
+  if (menu.status && menu.status !== "ACTIVE") {
+    return undefined;
+  }
+  if (menu.hidden) {
+    return undefined;
+  }
+  if (allowedMenus && menu.id && !allowedMenus.has(menu.id)) {
     return undefined;
   }
 
-  const permissionCode = menu.permissionCode || menu.permission_code || '';
+  const permissionCode = menu.permissionCode || menu.permission_code || "";
   const route =
     whitelist.byPermissionCode.get(permissionCode) ||
-    whitelist.byPath.get(menu.path || '');
+    whitelist.byPath.get(menu.path || "");
   if (!route) {
     return undefined;
   }
 
   if (
-    menu.type === 'page' &&
+    menu.type === "page" &&
     menu.component &&
     route.component &&
     menu.component !== route.component
@@ -233,25 +269,185 @@ function toMenuDataItem(
   }
 
   const children = (menu.children || [])
-    .map((child) => toMenuDataItem(child, whitelist))
+    .map((child) => toMenuDataItem(child, whitelist, allowedMenus))
     .filter(Boolean) as MenuDataItem[];
 
   return {
-    ...route,
+    key: menu.id || route.key || route.path || menu.path,
     name: menu.name || route.name,
     path: route.path || menu.path,
     icon: route.icon,
-    children,
+    hideInMenu: false,
+    children: children.length > 0 ? children : undefined,
   };
 }
 
-/**
- * @name request 配置，可以配置错误处理
- * 它基于 axios 提供了一套统一的网络请求和错误处理方案。
- * @doc https://umijs.org/docs/max/request#配置
- */
+function filterMenusByModule(
+  menus: API.CurrentUserMenu[],
+  selectedModuleId?: string
+) {
+  if (!selectedModuleId) {
+    return undefined;
+  }
+  const allowed = new Set<string>();
+  const visit = (menu: API.CurrentUserMenu): boolean => {
+    const children = menu.children || [];
+    let hasAllowedChild = false;
+    for (const child of children) {
+      hasAllowedChild = visit(child) || hasAllowedChild;
+    }
+    const belongsToModule =
+      (menu.moduleId || menu.module_id) === selectedModuleId;
+    const allowedBySelf = belongsToModule;
+    if ((allowedBySelf || hasAllowedChild) && menu.id) {
+      allowed.add(menu.id);
+    }
+    return allowedBySelf || hasAllowedChild;
+  };
+  menus.forEach(visit);
+  return allowed;
+}
+
+function resolveSelectedModuleId(
+  modules?: API.CurrentUserModule[],
+  candidate?: string
+) {
+  const activeModules = (modules || []).filter(
+    (module) => module.status !== "DISABLED" && !module.hidden && module.id
+  );
+  if (candidate && activeModules.some((module) => module.id === candidate)) {
+    return candidate;
+  }
+  return activeModules[0]?.id;
+}
+
+function renderModuleTabs({
+  modules = [],
+  value,
+  onChange,
+}: {
+  modules?: API.CurrentUserModule[];
+  value?: string;
+  onChange: (moduleId: string) => void;
+}) {
+  const visibleModules = modules
+    .filter((module) => module.status !== "DISABLED" && !module.hidden)
+    .sort((a, b) => (a.sort || 0) - (b.sort || 0));
+  const options = visibleModules
+    .filter((module) => module.id)
+    .map((module) => ({
+      label: module.name || module.code || module.id || "",
+      value: module.id || "",
+    }));
+
+  if (options.length === 0) {
+    return null;
+  }
+
+  const selectedValue = value || options[0]?.value;
+
+  return (
+    <div
+      style={{
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        marginInlineStart: 24,
+        minWidth: 0,
+      }}
+    >
+      <Tabs
+        activeKey={selectedValue}
+        items={options.map((option) => ({
+          key: option.value,
+          label: option.label,
+        }))}
+        onChange={onChange}
+        size="small"
+        tabBarGutter={24}
+        tabBarStyle={{
+          margin: 0,
+          height: 56,
+        }}
+      />
+    </div>
+  );
+}
+
+function findFirstMenuPathForModule(
+  menus: API.CurrentUserMenu[],
+  moduleId: string
+) {
+  const visit = (items: API.CurrentUserMenu[]): string | undefined => {
+    const sortedItems = [...items].sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    for (const menu of sortedItems) {
+      if (menu.status && menu.status !== "ACTIVE") {
+        continue;
+      }
+      if (menu.hidden) {
+        continue;
+      }
+      const belongsToModule = (menu.moduleId || menu.module_id) === moduleId;
+      if (belongsToModule && menu.path && menu.type === "page") {
+        return menu.path;
+      }
+      const childPath = visit(menu.children || []);
+      if (childPath) {
+        return childPath;
+      }
+    }
+    return undefined;
+  };
+
+  return visit(menus);
+}
+
+function getStoredSelectedModuleId() {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+  return window.localStorage.getItem(selectedModuleStorageKey) || undefined;
+}
+
+function setStoredSelectedModuleId(moduleId: string) {
+  if (typeof window === "undefined") {
+    return;
+  }
+  window.localStorage.setItem(selectedModuleStorageKey, moduleId);
+}
+
+function isAuthorizedPath(pathname: string, currentUser: API.CurrentUser) {
+  if (
+    pathname === "/" ||
+    pathname === loginPath ||
+    pathname.startsWith("/exception/") ||
+    pathname.startsWith("/account/")
+  ) {
+    return true;
+  }
+  const menuPaths = flattenCurrentUserMenuPaths(currentUser.menus || []);
+  if (menuPaths.length === 0) {
+    return true;
+  }
+  return menuPaths.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
+}
+
+function flattenCurrentUserMenuPaths(menus: API.CurrentUserMenu[]) {
+  const paths: string[] = [];
+  const visit = (menu: API.CurrentUserMenu) => {
+    if (menu.status === "ACTIVE" && menu.path) {
+      paths.push(menu.path);
+    }
+    (menu.children || []).forEach(visit);
+  };
+  menus.forEach(visit);
+  return paths;
+}
+
 export const request: RequestConfig = {
-  baseURL: '',
+  baseURL: "",
   ...errorConfig,
 };
 

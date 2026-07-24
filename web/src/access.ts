@@ -18,9 +18,11 @@ export default function access(
     canAdmin: hasMenuPermission('menu.admin'),
     canManageSystem:
       hasMenuPermission('menu.system.menu') ||
+      hasMenuPermission('menu.system.module') ||
       hasMenuPermission('menu.system.role') ||
       hasMenuPermission('menu.system.user'),
     canManageMenus: hasMenuPermission('menu.system.menu'),
+    canManageModules: hasMenuPermission('menu.system.module'),
     canManageRoles: hasMenuPermission('menu.system.role'),
     canManageUsers: hasMenuPermission('menu.system.user'),
     canCreateUsers: hasButtonPermission('button.system.user.create'),
@@ -30,5 +32,8 @@ export default function access(
       'button.system.user.reset-password',
     ),
     canBindUserRoles: hasButtonPermission('button.system.user.roles'),
+    canCreateModules: hasButtonPermission('button.system.module.create'),
+    canUpdateModules: hasButtonPermission('button.system.module.update'),
+    canDeleteModules: hasButtonPermission('button.system.module.delete'),
   };
 }

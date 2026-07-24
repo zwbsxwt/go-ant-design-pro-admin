@@ -1,12 +1,12 @@
-import { currentUser } from '@/services/ant-design-pro/currentUser';
-import { login } from '@/services/ant-design-pro/login';
-import { outLogin } from '@/services/ant-design-pro/outLogin';
-import { clearAuthState, setAuthToken } from '@/utils/authState';
+import { currentUser } from "@/services/ant-design-pro/currentUser";
+import { login } from "@/services/ant-design-pro/login";
+import { outLogin } from "@/services/ant-design-pro/outLogin";
+import { clearAuthState, setAuthToken } from "@/utils/authState";
 
 export async function loginAccount(params: API.LoginParams) {
-  const rawResult = await login({ ...params, type: params.type || 'account' });
+  const rawResult = await login({ ...params, type: params.type || "account" });
   const result = normalizeLoginResult(rawResult);
-  if (result.status === 'ok' && result.token) {
+  if (result.status === "ok" && result.token) {
     setAuthToken(result.token);
   }
   return result;
@@ -22,7 +22,7 @@ export async function queryCurrentUser(options?: { [key: string]: any }) {
 
 export async function logoutAccount(options?: { [key: string]: any }) {
   try {
-    return await outLogin(options);
+    return await outLogin({ skipErrorHandler: true, ...(options || {}) });
   } finally {
     clearAuthState();
   }
@@ -31,7 +31,7 @@ export async function logoutAccount(options?: { [key: string]: any }) {
 function normalizeLoginResult(result: API.LoginResult) {
   const raw = result as API.LoginResult & {
     current_authority?: string;
-    expires_at?: API.LoginResult['expiresAt'];
+    expires_at?: API.LoginResult["expiresAt"];
     error_message?: string;
   };
   return {
@@ -51,6 +51,7 @@ function normalizeCurrentUser(user?: API.CurrentUser) {
     menu_permissions?: string[];
     button_permissions?: string[];
     role_codes?: string[];
+    modules?: API.CurrentUserModule[];
     menus?: API.CurrentUserMenu[];
   };
   const normalized = { ...user };
@@ -72,6 +73,11 @@ function normalizeCurrentUser(user?: API.CurrentUser) {
   if (normalized.roleCodes === undefined && raw.role_codes !== undefined) {
     normalized.roleCodes = raw.role_codes;
   }
+  if (normalized.modules === undefined && raw.modules !== undefined) {
+    normalized.modules = normalizeCurrentUserModules(raw.modules);
+  } else if (normalized.modules !== undefined) {
+    normalized.modules = normalizeCurrentUserModules(normalized.modules);
+  }
   if (normalized.menus === undefined && raw.menus !== undefined) {
     normalized.menus = normalizeCurrentUserMenus(raw.menus);
   } else if (normalized.menus !== undefined) {
@@ -80,12 +86,19 @@ function normalizeCurrentUser(user?: API.CurrentUser) {
   return normalized;
 }
 
+function normalizeCurrentUserModules(
+  modules?: API.CurrentUserModule[]
+): API.CurrentUserModule[] {
+  return (modules || []).map((module) => ({ ...module }));
+}
+
 function normalizeCurrentUserMenus(
-  menus?: API.CurrentUserMenu[],
+  menus?: API.CurrentUserMenu[]
 ): API.CurrentUserMenu[] {
   return (menus || []).map((menu) => {
     const normalized = {
       ...menu,
+      moduleId: menu.moduleId ?? menu.module_id,
       parentId: menu.parentId ?? menu.parent_id,
       permissionCode: menu.permissionCode ?? menu.permission_code,
     };

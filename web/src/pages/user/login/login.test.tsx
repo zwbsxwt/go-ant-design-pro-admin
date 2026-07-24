@@ -40,9 +40,7 @@ describe('Login Page', () => {
     expect(
       rootContainer.baseElement?.querySelector('.ant-pro-form-login-desc')
         ?.textContent,
-    ).toBe(
-      'go-ant-design-pro-admin admin framework template',
-    );
+    ).toBe('后台管理框架模板');
 
     expect(rootContainer.asFragment()).toMatchSnapshot();
 
@@ -62,17 +60,13 @@ describe('Login Page', () => {
 
     await rootContainer.findAllByText('go-ant-design-pro-admin');
 
-    const userNameInput = await rootContainer.findByPlaceholderText(
-      'Username: admin or user',
-    );
+    const userNameInput = await rootContainer.findByPlaceholderText('用户名');
 
     act(() => {
       fireEvent.change(userNameInput, { target: { value: 'admin' } });
     });
 
-    const passwordInput = await rootContainer.findByPlaceholderText(
-      'Password: ant.design',
-    );
+    const passwordInput = await rootContainer.findByPlaceholderText('密码');
 
     act(() => {
       fireEvent.change(passwordInput, { target: { value: 'ant.design' } });

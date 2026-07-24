@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+package system.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "template-v6/server/admin-service/api/system/v1;v1";
+option java_multiple_files = true;
+option java_package = "system.v1";
+option objc_class_prefix = "APISystemV1";
+
+service ModuleService {
+  rpc ListModules(ListModulesRequest) returns (ListModulesReply) {
+    option (google.api.http) = {
+      get: "/api/system/modules"
+    };
+  }
+
+  rpc GetModule(GetModuleRequest) returns (Module) {
+    option (google.api.http) = {
+      get: "/api/system/modules/{id}"
+    };
+  }
+
+  rpc CreateModule(CreateModuleRequest) returns (Module) {
+    option (google.api.http) = {
+      post: "/api/system/modules"
+      body: "*"
+    };
+  }
+
+  rpc UpdateModule(UpdateModuleRequest) returns (Module) {
+    option (google.api.http) = {
+      put: "/api/system/modules/{id}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteModule(DeleteModuleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/system/modules/{id}"
+    };
+  }
+
+  rpc MigrateModuleMenus(MigrateModuleMenusRequest) returns (MigrateModuleMenusReply) {
+    option (google.api.http) = {
+      post: "/api/system/modules/{id}/migrate-menus"
+      body: "*"
+    };
+  }
+}
+
+message Module {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  string icon = 4;
+  int32 sort = 5;
+  string status = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  bool hidden = 9;
+}
+
+message ListModulesRequest {}
+
+message ListModulesReply {
+  repeated Module data = 1;
+}
+
+message GetModuleRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message CreateModuleRequest {
+  string code = 1 [(google.api.field_behavior) = REQUIRED];
+  string name = 2 [(google.api.field_behavior) = REQUIRED];
+  string icon = 3;
+  int32 sort = 4;
+  string status = 5;
+  bool hidden = 6;
+}
+
+message UpdateModuleRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+  string code = 2 [(google.api.field_behavior) = REQUIRED];
+  string name = 3 [(google.api.field_behavior) = REQUIRED];
+  string icon = 4;
+  int32 sort = 5;
+  string status = 6;
+  bool hidden = 7;
+}
+
+message DeleteModuleRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message MigrateModuleMenusRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+  string target_module_id = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message MigrateModuleMenusReply {
+  bool success = 1;
+}

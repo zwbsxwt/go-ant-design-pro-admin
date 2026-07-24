@@ -57,6 +57,50 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/auth.v1.OutLoginReply'
+    /api/profile:
+        get:
+            tags:
+                - ProfileService
+            operationId: ProfileService_GetProfile
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/profile.v1.GetProfileReply'
+        put:
+            tags:
+                - ProfileService
+            operationId: ProfileService_UpdateProfile
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/profile.v1.UpdateProfileRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/profile.v1.GetProfileReply'
+    /api/profile/password:
+        put:
+            tags:
+                - ProfileService
+            operationId: ProfileService_ChangePassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/profile.v1.ChangePasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /api/system/menus:
         get:
             tags:
@@ -86,6 +130,24 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/system.v1.Menu'
+    /api/system/menus/batch-migrate-module:
+        post:
+            tags:
+                - MenuService
+            operationId: MenuService_BatchMigrateMenuModule
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.v1.BatchMigrateMenuModuleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.v1.BatchMigrateMenuModuleReply'
     /api/system/menus/{id}:
         get:
             tags:
@@ -141,6 +203,114 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /api/system/modules:
+        get:
+            tags:
+                - ModuleService
+            operationId: ModuleService_ListModules
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.v1.ListModulesReply'
+        post:
+            tags:
+                - ModuleService
+            operationId: ModuleService_CreateModule
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.v1.CreateModuleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.v1.Module'
+    /api/system/modules/{id}:
+        get:
+            tags:
+                - ModuleService
+            operationId: ModuleService_GetModule
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.v1.Module'
+        put:
+            tags:
+                - ModuleService
+            operationId: ModuleService_UpdateModule
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.v1.UpdateModuleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.v1.Module'
+        delete:
+            tags:
+                - ModuleService
+            operationId: ModuleService_DeleteModule
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/system/modules/{id}/migrate-menus:
+        post:
+            tags:
+                - ModuleService
+            operationId: ModuleService_MigrateModuleMenus
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.v1.MigrateModuleMenusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.v1.MigrateModuleMenusReply'
     /api/system/roles:
         get:
             tags:
@@ -627,6 +797,10 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/auth.v1.CurrentUserMenu'
+                modules:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/auth.v1.CurrentUserModule'
         auth.v1.CurrentUserMenu:
             type: object
             properties:
@@ -655,6 +829,28 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/auth.v1.CurrentUserMenu'
+                moduleId:
+                    type: string
+                hidden:
+                    type: boolean
+        auth.v1.CurrentUserModule:
+            type: object
+            properties:
+                id:
+                    type: string
+                code:
+                    type: string
+                name:
+                    type: string
+                icon:
+                    type: string
+                sort:
+                    type: integer
+                    format: int32
+                status:
+                    type: string
+                hidden:
+                    type: boolean
         auth.v1.CurrentUserReply:
             type: object
             properties:
@@ -698,6 +894,73 @@ components:
         auth.v1.OutLoginRequest:
             type: object
             properties: {}
+        profile.v1.ChangePasswordRequest:
+            required:
+                - currentPassword
+                - newPassword
+                - confirmPassword
+            type: object
+            properties:
+                currentPassword:
+                    type: string
+                newPassword:
+                    type: string
+                confirmPassword:
+                    type: string
+        profile.v1.GetProfileReply:
+            type: object
+            properties:
+                data:
+                    $ref: '#/components/schemas/profile.v1.Profile'
+        profile.v1.Profile:
+            type: object
+            properties:
+                id:
+                    type: string
+                username:
+                    type: string
+                displayName:
+                    type: string
+                avatar:
+                    type: string
+                email:
+                    type: string
+                phone:
+                    type: string
+                status:
+                    type: string
+                roleCodes:
+                    type: array
+                    items:
+                        type: string
+        profile.v1.UpdateProfileRequest:
+            required:
+                - displayName
+            type: object
+            properties:
+                displayName:
+                    type: string
+                email:
+                    type: string
+                phone:
+                    type: string
+        system.v1.BatchMigrateMenuModuleReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        system.v1.BatchMigrateMenuModuleRequest:
+            required:
+                - menuIds
+                - targetModuleId
+            type: object
+            properties:
+                menuIds:
+                    type: array
+                    items:
+                        type: string
+                targetModuleId:
+                    type: string
         system.v1.CreateMenuRequest:
             required:
                 - type
@@ -724,6 +987,29 @@ components:
                     format: int32
                 status:
                     type: string
+                moduleId:
+                    type: string
+                hidden:
+                    type: boolean
+        system.v1.CreateModuleRequest:
+            required:
+                - code
+                - name
+            type: object
+            properties:
+                code:
+                    type: string
+                name:
+                    type: string
+                icon:
+                    type: string
+                sort:
+                    type: integer
+                    format: int32
+                status:
+                    type: string
+                hidden:
+                    type: boolean
         system.v1.CreateRoleRequest:
             required:
                 - code
@@ -770,6 +1056,13 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/system.v1.Menu'
+        system.v1.ListModulesReply:
+            type: object
+            properties:
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.v1.Module'
         system.v1.ListRolesReply:
             type: object
             properties:
@@ -818,6 +1111,49 @@ components:
                 updatedAt:
                     type: string
                     format: date-time
+                moduleId:
+                    type: string
+                hidden:
+                    type: boolean
+        system.v1.MigrateModuleMenusReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        system.v1.MigrateModuleMenusRequest:
+            required:
+                - id
+                - targetModuleId
+            type: object
+            properties:
+                id:
+                    type: string
+                targetModuleId:
+                    type: string
+        system.v1.Module:
+            type: object
+            properties:
+                id:
+                    type: string
+                code:
+                    type: string
+                name:
+                    type: string
+                icon:
+                    type: string
+                sort:
+                    type: integer
+                    format: int32
+                status:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+                hidden:
+                    type: boolean
         system.v1.ResetUserPasswordRequest:
             required:
                 - id
@@ -880,6 +1216,32 @@ components:
                     format: int32
                 status:
                     type: string
+                moduleId:
+                    type: string
+                hidden:
+                    type: boolean
+        system.v1.UpdateModuleRequest:
+            required:
+                - id
+                - code
+                - name
+            type: object
+            properties:
+                id:
+                    type: string
+                code:
+                    type: string
+                name:
+                    type: string
+                icon:
+                    type: string
+                sort:
+                    type: integer
+                    format: int32
+                status:
+                    type: string
+                hidden:
+                    type: boolean
         system.v1.UpdateRolePermissionsRequest:
             required:
                 - id
@@ -1051,6 +1413,8 @@ tags:
     - name: AuthService
       description: AuthService provides the first admin sign-in integration endpoints.
     - name: MenuService
+    - name: ModuleService
+    - name: ProfileService
     - name: RoleService
     - name: TodoService
       description: |-

@@ -66,12 +66,20 @@ func (s *MenuService) DeleteMenu(ctx context.Context, req *v1.DeleteMenuRequest)
 	return &emptypb.Empty{}, nil
 }
 
+func (s *MenuService) BatchMigrateMenuModule(ctx context.Context, req *v1.BatchMigrateMenuModuleRequest) (*v1.BatchMigrateMenuModuleReply, error) {
+	if err := s.uc.BatchMigrateMenuModule(ctx, bearerToken(ctx), req.GetMenuIds(), req.GetTargetModuleId()); err != nil {
+		return nil, err
+	}
+	return &v1.BatchMigrateMenuModuleReply{Success: true}, nil
+}
+
 func convertCreateMenuRequest(req *v1.CreateMenuRequest) *biz.Menu {
 	if req == nil {
 		return nil
 	}
 	return &biz.Menu{
 		ParentID:       req.GetParentId(),
+		ModuleID:       req.GetModuleId(),
 		Type:           req.GetType(),
 		Name:           req.GetName(),
 		Path:           req.GetPath(),
@@ -80,6 +88,7 @@ func convertCreateMenuRequest(req *v1.CreateMenuRequest) *biz.Menu {
 		Icon:           req.GetIcon(),
 		Sort:           req.GetSort(),
 		Status:         req.GetStatus(),
+		Hidden:         req.GetHidden(),
 	}
 }
 
@@ -90,6 +99,7 @@ func convertUpdateMenuRequest(req *v1.UpdateMenuRequest) *biz.Menu {
 	return &biz.Menu{
 		ID:             req.GetId(),
 		ParentID:       req.GetParentId(),
+		ModuleID:       req.GetModuleId(),
 		Type:           req.GetType(),
 		Name:           req.GetName(),
 		Path:           req.GetPath(),
@@ -98,6 +108,7 @@ func convertUpdateMenuRequest(req *v1.UpdateMenuRequest) *biz.Menu {
 		Icon:           req.GetIcon(),
 		Sort:           req.GetSort(),
 		Status:         req.GetStatus(),
+		Hidden:         req.GetHidden(),
 	}
 }
 
@@ -108,6 +119,7 @@ func convertMenu(menu *v1.Menu) *biz.Menu {
 	return &biz.Menu{
 		ID:             menu.GetId(),
 		ParentID:       menu.GetParentId(),
+		ModuleID:       menu.GetModuleId(),
 		Type:           menu.GetType(),
 		Name:           menu.GetName(),
 		Path:           menu.GetPath(),
@@ -116,6 +128,7 @@ func convertMenu(menu *v1.Menu) *biz.Menu {
 		Icon:           menu.GetIcon(),
 		Sort:           menu.GetSort(),
 		Status:         menu.GetStatus(),
+		Hidden:         menu.GetHidden(),
 	}
 }
 
@@ -133,6 +146,7 @@ func convertMenuReply(menu *biz.Menu) *v1.Menu {
 	}
 	return &v1.Menu{
 		Id:             menu.ID,
+		ModuleId:       menu.ModuleID,
 		ParentId:       menu.ParentID,
 		Type:           menu.Type,
 		Name:           menu.Name,
@@ -142,6 +156,7 @@ func convertMenuReply(menu *biz.Menu) *v1.Menu {
 		Icon:           menu.Icon,
 		Sort:           menu.Sort,
 		Status:         menu.Status,
+		Hidden:         menu.Hidden,
 		Children:       convertMenuReplies(menu.Children),
 		CreatedAt:      timestamppb.New(menu.CreatedAt),
 		UpdatedAt:      timestamppb.New(menu.UpdatedAt),

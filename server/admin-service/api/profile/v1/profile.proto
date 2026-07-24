@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package profile.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "template-v6/server/admin-service/api/profile/v1;v1";
+option java_multiple_files = true;
+option java_package = "profile.v1";
+option objc_class_prefix = "APIProfileV1";
+
+service ProfileService {
+  rpc GetProfile(GetProfileRequest) returns (GetProfileReply) {
+    option (google.api.http) = {
+      get: "/api/profile"
+    };
+  }
+
+  rpc UpdateProfile(UpdateProfileRequest) returns (GetProfileReply) {
+    option (google.api.http) = {
+      put: "/api/profile"
+      body: "*"
+    };
+  }
+
+  rpc ChangePassword(ChangePasswordRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/api/profile/password"
+      body: "*"
+    };
+  }
+
+  // Multipart uploads are registered manually in the HTTP server:
+  // POST /api/profile/avatar with form field "file".
+}
+
+message Profile {
+  string id = 1;
+  string username = 2;
+  string display_name = 3;
+  string avatar = 4;
+  string email = 5;
+  string phone = 6;
+  string status = 7;
+  repeated string role_codes = 8;
+}
+
+message GetProfileRequest {}
+
+message GetProfileReply {
+  Profile data = 1;
+}
+
+message UpdateProfileRequest {
+  string display_name = 1 [(google.api.field_behavior) = REQUIRED];
+  string email = 2;
+  string phone = 3;
+}
+
+message ChangePasswordRequest {
+  string current_password = 1 [(google.api.field_behavior) = REQUIRED];
+  string new_password = 2 [(google.api.field_behavior) = REQUIRED];
+  string confirm_password = 3 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UploadAvatarReply {
+  string avatar = 1;
+  Profile profile = 2;
+}

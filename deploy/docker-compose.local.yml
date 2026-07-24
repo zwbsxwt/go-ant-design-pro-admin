@@ -11,6 +11,8 @@ services:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+      - ../server/admin-service/internal/data/migrations/001_init_rbac.sql:/docker-entrypoint-initdb.d/01_init_rbac.sql:ro
+      - ../server/admin-service/internal/data/seeds/001_seed_rbac.sql:/docker-entrypoint-initdb.d/02_seed_rbac.sql:ro
     healthcheck:
       test:
         [

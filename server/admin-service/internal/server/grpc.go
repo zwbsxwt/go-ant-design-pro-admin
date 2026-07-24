@@ -2,6 +2,7 @@ package server
 
 import (
 	authv1 "template-v6/server/admin-service/api/auth/v1"
+	profilev1 "template-v6/server/admin-service/api/profile/v1"
 	systemv1 "template-v6/server/admin-service/api/system/v1"
 	v1 "template-v6/server/admin-service/api/todo/v1"
 	"template-v6/server/admin-service/internal/conf"
@@ -12,7 +13,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, todo *service.TodoService, auth *service.AuthService, menu *service.MenuService, role *service.RoleService, user *service.UserService) *grpc.Server {
+func NewGRPCServer(c *conf.Server, todo *service.TodoService, auth *service.AuthService, menu *service.MenuService, role *service.RoleService, user *service.UserService, profile *service.ProfileService, module *service.ModuleService) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -33,5 +34,7 @@ func NewGRPCServer(c *conf.Server, todo *service.TodoService, auth *service.Auth
 	systemv1.RegisterMenuServiceServer(srv, menu)
 	systemv1.RegisterRoleServiceServer(srv, role)
 	systemv1.RegisterUserServiceServer(srv, user)
+	systemv1.RegisterModuleServiceServer(srv, module)
+	profilev1.RegisterProfileServiceServer(srv, profile)
 	return srv
 }

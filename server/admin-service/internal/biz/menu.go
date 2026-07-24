@@ -33,6 +33,7 @@ var (
 // Menu is a directory, page, or button permission node.
 type Menu struct {
 	ID             string
+	ModuleID       string
 	ParentID       string
 	Type           string
 	Name           string
@@ -42,6 +43,7 @@ type Menu struct {
 	Icon           string
 	Sort           int32
 	Status         string
+	Hidden         bool
 	Children       []*Menu
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
@@ -57,12 +59,14 @@ type MenuRepo interface {
 	PermissionCodeExists(context.Context, string, string) (bool, error)
 	HasChildren(context.Context, string) (bool, error)
 	HasRoleBindings(context.Context, string) (bool, error)
+	BatchMigrateModule(context.Context, []string, string) error
 }
 
 // MenuUsecase handles menu management rules.
 type MenuUsecase struct {
-	repo *MenuRepoHolder
-	auth *AuthUsecase
+	repo    *MenuRepoHolder
+	modules ModuleRepo
+	auth    *AuthUsecase
 }
 
 type MenuRepoHolder struct {
@@ -70,8 +74,8 @@ type MenuRepoHolder struct {
 }
 
 // NewMenuUsecase creates a MenuUsecase.
-func NewMenuUsecase(repo MenuRepo, auth *AuthUsecase) *MenuUsecase {
-	return &MenuUsecase{repo: &MenuRepoHolder{MenuRepo: repo}, auth: auth}
+func NewMenuUsecase(repo MenuRepo, modules ModuleRepo, auth *AuthUsecase) *MenuUsecase {
+	return &MenuUsecase{repo: &MenuRepoHolder{MenuRepo: repo}, modules: modules, auth: auth}
 }
 
 // ListMenus returns a sorted menu tree for authorized users.
@@ -151,6 +155,43 @@ func (uc *MenuUsecase) DeleteMenu(ctx context.Context, token string, id string) 
 	return uc.repo.DeleteMenu(ctx, id)
 }
 
+func (uc *MenuUsecase) BatchMigrateMenuModule(ctx context.Context, token string, menuIDs []string, targetModuleID string) error {
+	if err := uc.requireManagePermission(ctx, token); err != nil {
+		return err
+	}
+	targetModuleID = strings.TrimSpace(targetModuleID)
+	if len(menuIDs) == 0 || targetModuleID == "" {
+		return ErrMenuInvalidType
+	}
+	targetModule, err := uc.modules.GetModule(ctx, targetModuleID)
+	if err != nil {
+		return err
+	}
+	if targetModule.Status != MenuStatusEnabled {
+		return ErrMenuInvalidType
+	}
+	ids := make([]string, 0, len(menuIDs))
+	seen := make(map[string]struct{}, len(menuIDs))
+	for _, id := range menuIDs {
+		id = strings.TrimSpace(id)
+		if id == "" {
+			continue
+		}
+		if _, ok := seen[id]; ok {
+			continue
+		}
+		if _, err := uc.repo.GetMenu(ctx, id); err != nil {
+			return err
+		}
+		seen[id] = struct{}{}
+		ids = append(ids, id)
+	}
+	if len(ids) == 0 {
+		return ErrMenuInvalidType
+	}
+	return uc.repo.BatchMigrateModule(ctx, ids, targetModuleID)
+}
+
 func (uc *MenuUsecase) requireManagePermission(ctx context.Context, token string) error {
 	user, err := uc.auth.CurrentUser(ctx, token)
 	if err != nil {
@@ -206,6 +247,10 @@ func normalizeMenu(menu *Menu) *Menu {
 	}
 	normalized := *menu
 	normalized.ID = strings.TrimSpace(normalized.ID)
+	normalized.ModuleID = strings.TrimSpace(normalized.ModuleID)
+	if normalized.ModuleID == "" {
+		normalized.ModuleID = DefaultModuleID
+	}
 	normalized.ParentID = strings.TrimSpace(normalized.ParentID)
 	normalized.Type = strings.TrimSpace(normalized.Type)
 	normalized.Name = strings.TrimSpace(normalized.Name)
