@@ -24,6 +24,9 @@ func initializeSchema(ctx context.Context, db *sql.DB) error {
 	if err := executeSQLFile(ctx, db, "seeds/001_seed_rbac.sql"); err != nil {
 		return err
 	}
+	if err := executeSQLFile(ctx, db, "seeds/002_seed_harness.sql"); err != nil {
+		return err
+	}
 	return nil
 }
 

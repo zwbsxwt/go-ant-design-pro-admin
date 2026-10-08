@@ -16,7 +16,7 @@ import (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, todo *service.TodoService, auth *service.AuthService, menu *service.MenuService, role *service.RoleService, user *service.UserService, profile *service.ProfileService, module *service.ModuleService) *http.Server {
+func NewHTTPServer(c *conf.Server, todo *service.TodoService, auth *service.AuthService, menu *service.MenuService, role *service.RoleService, user *service.UserService, profile *service.ProfileService, module *service.ModuleService, harness *service.HarnessService) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -48,5 +48,20 @@ func NewHTTPServer(c *conf.Server, todo *service.TodoService, auth *service.Auth
 	systemv1.RegisterModuleServiceHTTPServer(srv, module)
 	profilev1.RegisterProfileServiceHTTPServer(srv, profile)
 	srv.Route("/api/profile").POST("/avatar", profile.UploadAvatarHTTP)
+	h := srv.Route("/api/harness")
+	h.GET("/capabilities", harness.Capabilities)
+	h.GET("/workspaces", harness.ListWorkspaces)
+	h.POST("/workspaces", harness.CreateWorkspace)
+	h.DELETE("/workspaces/{workspaceId}", harness.DeleteWorkspace)
+	h.GET("/sessions", harness.ListSessions)
+	h.POST("/sessions", harness.CreateSession)
+	h.GET("/sessions/{sessionId}", harness.GetSession)
+	h.DELETE("/sessions/{sessionId}", harness.DeleteSession)
+	h.PATCH("/sessions/{sessionId}/title", harness.RenameSession)
+	h.POST("/sessions/{sessionId}/messages", harness.SendMessage)
+	h.POST("/sessions/{sessionId}/cancel", harness.Cancel)
+	h.PATCH("/sessions/{sessionId}/workspace", harness.AssignWorkspace)
+	h.PATCH("/sessions/{sessionId}/preferences", harness.Preferences)
+	h.GET("/sessions/{sessionId}/events", harness.Events)
 	return srv
 }
