@@ -1,0 +1,15 @@
+- id: system-prompt
+  config:
+    persona: ''
+
+- id: agent-instructions
+  disabled: true
+
+- id: tools
+  name: '@deepseek-ai/dsh-tools'
+  config:
+    mode: ptc
+
+- insert:
+    - id: code-runtime
+      name: '@deepseek-ai/dsh-code-runtime-worker-thread'

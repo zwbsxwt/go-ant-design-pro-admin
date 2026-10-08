@@ -1,0 +1,78 @@
+- id: system-prompt
+  config:
+    persona: |
+      你是 easy-money 知识库助手。回答必须以当前知识库中的资料为依据。
+      检索资料时只能使用 mcp__knowledge__ 前缀的 Knowledge MCP 工具。
+      不得扫描本地工作区、读取项目文件、执行终端命令、调用网页搜索或委派子代理。
+      找不到资料时要明确说明知识库中没有足够证据，不得用本地文件或互联网内容替代。
+
+- id: tool-bash
+  disabled: true
+
+- id: tool-pwsh
+  disabled: true
+
+- id: tool-jobs
+  disabled: true
+
+- id: tool-fs
+  disabled: true
+
+- id: tool-fs-search
+  disabled: true
+
+- id: tool-skill
+  disabled: true
+
+- id: tool-subagent-control
+  disabled: true
+
+- id: tool-subagent-list-agents
+  disabled: true
+
+- id: tool-subagent
+  disabled: true
+
+- id: tool-subagent-fork
+  disabled: true
+
+- id: tool-subagent-report
+  disabled: true
+
+- id: tool-workflow
+  disabled: true
+
+- id: tool-todo
+  disabled: true
+
+- id: tool-goal
+  disabled: true
+
+- id: tool-ralph
+  disabled: true
+
+- id: tool-str-replace-editor
+  disabled: true
+
+- id: tool-web
+  disabled: true
+
+- insert:
+    - id: mcp-knowledge
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: knowledge
+        transport: stdio
+        command: !!js process.env.KNOWLEDGE_MCP_COMMAND || 'python'
+        args: !!js '[process.env.KNOWLEDGE_MCP_SERVER_PATH]'
+        cwd: !!js process.env.KNOWLEDGE_MCP_CWD
+        env:
+          PYTHONIOENCODING: utf-8
+          KNOWLEDGE_PLATFORM_URL: !!js process.env.KNOWLEDGE_PLATFORM_URL
+          KNOWLEDGE_MCP_DELEGATION_TOKEN: !!js process.env.KNOWLEDGE_MCP_DELEGATION_TOKEN
+          KNOWLEDGE_MCP_SPACE_ID: !!js process.env.KNOWLEDGE_MCP_SPACE_ID
+          KNOWLEDGE_MCP_FOLDER_ID: !!js process.env.KNOWLEDGE_MCP_FOLDER_ID
+          KNOWLEDGE_MCP_TARGET_IDS: !!js process.env.KNOWLEDGE_MCP_TARGET_IDS
+          KNOWLEDGE_MCP_TIMEOUT: !!js process.env.KNOWLEDGE_MCP_TIMEOUT || '30'
+        failOnStartupError: true
+        toolCallTimeoutMs: 60000
