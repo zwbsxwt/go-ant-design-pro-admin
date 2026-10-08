@@ -32,6 +32,11 @@ pnpm-debug.log*
 *.tar.gz
 *.tgz
 
+# Python / agent-sdk local runtime
+**/.venv/
+**/__pycache__/
+agent-sdk/agent-sdk-data/
+
 # Local verification images
 *-screenshot.png
 *dashboard.png
