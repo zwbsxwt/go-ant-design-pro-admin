@@ -193,7 +193,13 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
-      const msg = await loginAccount({ ...values, type: 'account' });
+      // 用户名和密码不允许首尾空白，提交前去掉粘贴带入的多余空格。
+      const msg = await loginAccount({
+        ...values,
+        username: values.username?.trim(),
+        password: values.password?.trim(),
+        type: 'account',
+      });
       if (msg.status !== 'ok') {
         setUserLoginState(msg);
         return;
