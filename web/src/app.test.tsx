@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
 
 // Mock all heavy dependencies before importing app
 const mockReplace = vi.fn();
@@ -32,12 +33,30 @@ vi.mock('@/components', () => ({
   VersionDropdown: () => null,
 }));
 
-vi.mock('@ant-design/pro-components', () => ({
-  SettingDrawer: () => null,
+vi.mock('@/components/ConsoleShell', () => ({
+  ConsoleHeader: () => null,
+  ConsoleFrame: ({ children }: any) => children,
+}));
+
+vi.mock('@/components/ConsoleShell/context', () => ({
+  ConsoleUiProvider: ({ children }: any) => children,
 }));
 
 vi.mock('@ant-design/icons', () => ({
-  LinkOutlined: () => null,
+  ApartmentOutlined: () => null,
+  AppstoreOutlined: () => null,
+  BookOutlined: () => null,
+  CalendarOutlined: () => null,
+  CrownOutlined: () => null,
+  DatabaseOutlined: () => null,
+  FundOutlined: () => null,
+  LineChartOutlined: () => null,
+  MenuOutlined: () => null,
+  MessageOutlined: () => null,
+  SettingOutlined: () => null,
+  StockOutlined: () => null,
+  TeamOutlined: () => null,
+  UserOutlined: () => null,
 }));
 
 vi.mock('./requestErrorConfig', () => ({
@@ -74,7 +93,6 @@ describe('app getInitialState', () => {
       name: 'Test User',
       access: 'admin',
     });
-    expect(state.settingDrawerOpen).toBe(false);
     expect(state.fetchUserInfo).toBeDefined();
   });
 
@@ -142,5 +160,87 @@ describe('app getInitialState', () => {
 
     const user = await state.fetchUserInfo?.();
     expect(user).toEqual({ name: 'Fetched User', access: 'user' });
+  });
+});
+
+describe('menu icon compatibility', () => {
+  it('maps kebab-case and Ant Design component names to React icons', async () => {
+    const React = await import('react');
+    const { resolveMenuIcon } = await import('./utils/menuIcon');
+
+    expect(React.isValidElement(resolveMenuIcon('line-chart'))).toBe(true);
+    expect(React.isValidElement(resolveMenuIcon('LineChartOutlined'))).toBe(
+      true,
+    );
+    expect(React.isValidElement(resolveMenuIcon('database'))).toBe(true);
+    expect(React.isValidElement(resolveMenuIcon('DatabaseOutlined'))).toBe(
+      true,
+    );
+  });
+
+  it('does not render an unknown icon identifier as text', async () => {
+    const { resolveMenuIcon } = await import('./utils/menuIcon');
+
+    expect(resolveMenuIcon('not-a-real-icon')).toBeUndefined();
+  });
+});
+
+describe('route-specific layout', () => {
+  it('allows the public workspace and rejects a disabled page even under an authorized directory', async () => {
+    const { layout } = await import('./app');
+    const initialState = { settings: {}, currentUser: { menus: [{
+      id: 'system', moduleId: 'system', type: 'directory', path: '/system', status: 'ACTIVE',
+      children: [{ id: 'user', moduleId: 'system', type: 'page', path: '/system/user', status: 'DISABLED' }],
+    }] } } as any;
+    mockHistory.location.pathname = '/workspace';
+    layout({ initialState, setInitialState: vi.fn() } as any).onPageChange?.(mockHistory.location as any);
+    expect(mockReplace).not.toHaveBeenCalled();
+    mockHistory.location.pathname = '/system/user';
+    layout({ initialState, setInitialState: vi.fn() } as any).onPageChange?.(mockHistory.location as any);
+    expect(mockReplace).toHaveBeenCalledWith('/exception/403');
+
+    mockReplace.mockClear();
+    const emptyUser = { settings: {}, currentUser: { menus: [] } } as any;
+    layout({ initialState: emptyUser, setInitialState: vi.fn() } as any).onPageChange?.(mockHistory.location as any);
+    expect(mockReplace).toHaveBeenCalledWith('/exception/403');
+  });
+
+  it('hides the global sider for Harness and Knowledge workbenches only', async () => {
+    const { layout } = await import('./app');
+    const initialState = { settings: {}, currentUser: { menus: [] } } as any;
+    const setInitialState = vi.fn();
+
+    mockHistory.location.pathname = '/knowledge';
+    expect(layout({ initialState, setInitialState } as any).menuRender).toBe(false);
+
+    mockHistory.location.pathname = '/harness';
+    expect(layout({ initialState, setInitialState } as any).menuRender).toBe(false);
+
+    mockHistory.location.pathname = '/workspace';
+    expect(layout({ initialState, setInitialState } as any).menuRender).toBe(false);
+
+    mockHistory.location.pathname = '/account/profile';
+    expect(layout({ initialState, setInitialState } as any).menuRender).toBe(false);
+
+    mockHistory.location.pathname = '/admin/users';
+    expect(layout({ initialState, setInitialState } as any).menuRender).toBeUndefined();
+  });
+
+  it('does not render the floating settings drawer on any page', async () => {
+    const React = await import('react');
+    const { layout } = await import('./app');
+    const initialState = { settings: {}, currentUser: { menus: [] } } as any;
+    const setInitialState = vi.fn();
+
+    mockHistory.location.pathname = '/knowledge';
+    const knowledgeLayout = layout({ initialState, setInitialState } as any);
+    render(knowledgeLayout.childrenRender?.(React.createElement('div', null, 'knowledge'), {} as any) as React.ReactElement);
+    expect(screen.queryByText('setting-drawer')).not.toBeInTheDocument();
+
+    mockHistory.location.pathname = '/admin/users';
+    const adminLayout = layout({ initialState, setInitialState } as any);
+    render(adminLayout.childrenRender?.(React.createElement('div', null, 'admin'), {} as any) as React.ReactElement);
+    expect(screen.getByText('admin')).toBeInTheDocument();
+    expect(screen.queryByText('setting-drawer')).not.toBeInTheDocument();
   });
 });

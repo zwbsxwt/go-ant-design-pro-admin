@@ -81,7 +81,9 @@ export const errorConfig: RequestConfig = {
             history.replace('/user/login');
           }
         } else {
-          message.error(`Response status:${error.response.status}`);
+          const payload = error.response.data as any;
+          const detail = payload?.message || payload?.error || payload?.detail;
+          message.error(detail || `Response status:${error.response.status}`);
         }
       } else if (typeof navigator !== 'undefined' && !navigator.onLine) {
         message.error(

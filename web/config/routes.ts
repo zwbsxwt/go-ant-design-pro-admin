@@ -1,5 +1,18 @@
 export default [
   {
+    path: '/workspace',
+    name: 'workspace',
+    component: './Workspace',
+    hideInMenu: true,
+  },
+  {
+    path: '/harness',
+    name: 'harness',
+    icon: 'message',
+    component: './Harness',
+    permissionCode: 'menu.harness',
+  },
+  {
     path: "/user",
     layout: false,
     routes: [
@@ -15,30 +28,6 @@ export default [
       {
         component: "./exception/404",
         path: "/user/*",
-      },
-    ],
-  },
-  {
-    path: "/welcome",
-    name: "welcome",
-    icon: "smile",
-    component: "./Welcome",
-    permissionCode: "menu.dashboard",
-  },
-  {
-    path: "/admin",
-    name: "admin",
-    icon: "crown",
-    permissionCode: "menu.admin",
-    routes: [
-      {
-        path: "/admin",
-        redirect: "/admin/sub-page",
-      },
-      {
-        path: "/admin/sub-page",
-        name: "sub-page",
-        component: "./Admin",
       },
     ],
   },
@@ -95,7 +84,7 @@ export default [
   },
   {
     path: "/",
-    redirect: "/welcome",
+    redirect: "/workspace",
   },
   {
     component: "./exception/404",

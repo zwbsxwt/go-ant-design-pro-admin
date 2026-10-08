@@ -2,21 +2,22 @@ import type {
   Settings as LayoutSettings,
   MenuDataItem,
 } from "@ant-design/pro-components";
-import { SettingDrawer } from "@ant-design/pro-components";
 import type { RequestConfig, RunTimeLayoutConfig } from "@umijs/max";
 import { history, Link } from "@umijs/max";
-import { Tabs } from "antd";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import React from "react";
 import {
-  AvatarDropdown,
   ErrorBoundary,
   Footer,
   OfflineBanner,
 } from "@/components";
 import { queryCurrentUser } from "@/services/admin/auth";
 import { clearAuthState } from "@/utils/authState";
+import { resolveMenuIcon } from "@/utils/menuIcon";
+import { ConsoleFrame, ConsoleHeader } from "@/components/ConsoleShell";
+import { ConsoleUiProvider } from "@/components/ConsoleShell/context";
+import { getConsoleModules, recordRecentPage } from "@/components/ConsoleShell/navigation";
 import defaultSettings from "../config/defaultSettings";
 import { errorConfig } from "./requestErrorConfig";
 
@@ -31,7 +32,6 @@ type InitialState = {
   selectedModuleId?: string;
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
-  settingDrawerOpen?: boolean;
 };
 
 type WhitelistMenuDataItem = MenuDataItem & {
@@ -66,17 +66,16 @@ export async function getInitialState(): Promise<InitialState> {
       currentUser,
       selectedModuleId: resolveSelectedModuleId(
         currentUser?.modules,
-        getStoredSelectedModuleId()
+        findModuleIdForPath(currentUser?.menus || [], location.pathname) ||
+          getStoredSelectedModuleId()
       ),
       settings: defaultSettings as Partial<LayoutSettings>,
-      settingDrawerOpen: false,
     };
   }
 
   return {
     fetchUserInfo,
     settings: defaultSettings as Partial<LayoutSettings>,
-    settingDrawerOpen: false,
   };
 }
 
@@ -84,6 +83,8 @@ export const layout: RunTimeLayoutConfig = ({
   initialState,
   setInitialState,
 }) => ({
+  menuRender: isFullWidthWorkbench(history.location.pathname) ? false : undefined,
+  siderMenuRender: (_props: unknown, defaultDom: React.ReactNode) => defaultDom,
   menuItemRender: (item, dom) => {
     if (item.path) {
       return (
@@ -95,45 +96,15 @@ export const layout: RunTimeLayoutConfig = ({
     return dom;
   },
   menuDataRender: (menuData) =>
-    buildDatabaseBackedMenuData(
+    isFullWidthWorkbench(history.location.pathname) ? [] : buildDatabaseBackedMenuData(
       menuData as WhitelistMenuDataItem[],
       initialState?.currentUser?.menus,
-      initialState?.selectedModuleId
+      findModuleIdForPath(initialState?.currentUser?.menus || [], history.location.pathname) || initialState?.selectedModuleId
     ),
-  headerContentRender: () =>
-    renderModuleTabs({
-      modules: initialState?.currentUser?.modules,
-      value: resolveSelectedModuleId(
-        initialState?.currentUser?.modules,
-        initialState?.selectedModuleId
-      ),
-      onChange: (moduleId) => {
-        setStoredSelectedModuleId(moduleId);
-        setInitialState((state) => ({
-          ...state,
-          selectedModuleId: moduleId,
-        }));
-        const firstMenuPath = findFirstMenuPathForModule(
-          initialState?.currentUser?.menus || [],
-          moduleId
-        );
-        if (firstMenuPath) {
-          history.push(firstMenuPath);
-        }
-      },
-    }),
+  headerRender: () => <ConsoleHeader user={initialState?.currentUser} />,
   actionsRender: () => [],
-  avatarProps: {
-    src: initialState?.currentUser?.avatar,
-    title:
-      initialState?.currentUser?.name ||
-      initialState?.currentUser?.username ||
-      "用户",
-    render: (_, avatarChildren) => (
-      <AvatarDropdown>{avatarChildren}</AvatarDropdown>
-    ),
-  },
-  footerRender: () => <Footer />,
+  footerRender: () =>
+    isFullWidthWorkbench(history.location.pathname) ? null : <Footer />,
   onPageChange: () => {
     const { location } = history;
     if (!initialState?.currentUser && location.pathname !== loginPath) {
@@ -144,12 +115,22 @@ export const layout: RunTimeLayoutConfig = ({
       );
       return;
     }
+    const pathModuleId = findModuleIdForPath(
+      initialState?.currentUser?.menus || [],
+      location.pathname
+    );
+    if (pathModuleId && pathModuleId !== initialState?.selectedModuleId) {
+      setStoredSelectedModuleId(pathModuleId);
+      setInitialState((state) => ({ ...state, selectedModuleId: pathModuleId }));
+    }
     if (
       initialState?.currentUser &&
       !isAuthorizedPath(location.pathname, initialState.currentUser)
     ) {
       history.replace("/exception/403");
+      return;
     }
+    recordRecentPage(initialState?.currentUser, getConsoleModules(initialState?.currentUser), location.pathname);
   },
   bgLayoutImgList: [
     {
@@ -173,32 +154,14 @@ export const layout: RunTimeLayoutConfig = ({
   ],
   links: [],
   ErrorBoundary,
-  menuHeaderRender: undefined,
-  childrenRender: (children) => (
-    <>
-      {children}
-      <SettingDrawer
-        disableUrlParams
-        enableDarkTheme
-        collapse={initialState?.settingDrawerOpen}
-        onCollapseChange={(open) => {
-          setInitialState((state) => ({
-            ...state,
-            settingDrawerOpen: open,
-          }));
-        }}
-        settings={initialState?.settings}
-        onSettingChange={(settings) => {
-          setInitialState((state) => ({
-            ...state,
-            settings,
-          }));
-        }}
-      />
-    </>
-  ),
+  menuHeaderRender: false,
+  childrenRender: (children) => <ConsoleFrame user={initialState?.currentUser}>{children}</ConsoleFrame>,
   ...initialState?.settings,
 });
+
+function isFullWidthWorkbench(pathname: string) {
+  return pathname === '/workspace' || pathname.startsWith('/harness') || pathname.startsWith('/knowledge') || pathname.startsWith('/account');
+}
 
 function buildDatabaseBackedMenuData(
   staticMenus: WhitelistMenuDataItem[],
@@ -206,7 +169,7 @@ function buildDatabaseBackedMenuData(
   selectedModuleId?: string
 ): MenuDataItem[] {
   if (!currentUserMenus || currentUserMenus.length === 0) {
-    return staticMenus;
+    return [];
   }
 
   const whitelist = createRouteWhitelist(staticMenus);
@@ -276,7 +239,7 @@ function toMenuDataItem(
     key: menu.id || route.key || route.path || menu.path,
     name: menu.name || route.name,
     path: route.path || menu.path,
-    icon: route.icon,
+    icon: resolveMenuIcon(menu.icon || route.icon),
     hideInMenu: false,
     children: children.length > 0 ? children : undefined,
   };
@@ -321,87 +284,6 @@ function resolveSelectedModuleId(
   return activeModules[0]?.id;
 }
 
-function renderModuleTabs({
-  modules = [],
-  value,
-  onChange,
-}: {
-  modules?: API.CurrentUserModule[];
-  value?: string;
-  onChange: (moduleId: string) => void;
-}) {
-  const visibleModules = modules
-    .filter((module) => module.status !== "DISABLED" && !module.hidden)
-    .sort((a, b) => (a.sort || 0) - (b.sort || 0));
-  const options = visibleModules
-    .filter((module) => module.id)
-    .map((module) => ({
-      label: module.name || module.code || module.id || "",
-      value: module.id || "",
-    }));
-
-  if (options.length === 0) {
-    return null;
-  }
-
-  const selectedValue = value || options[0]?.value;
-
-  return (
-    <div
-      style={{
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        marginInlineStart: 24,
-        minWidth: 0,
-      }}
-    >
-      <Tabs
-        activeKey={selectedValue}
-        items={options.map((option) => ({
-          key: option.value,
-          label: option.label,
-        }))}
-        onChange={onChange}
-        size="small"
-        tabBarGutter={24}
-        tabBarStyle={{
-          margin: 0,
-          height: 56,
-        }}
-      />
-    </div>
-  );
-}
-
-function findFirstMenuPathForModule(
-  menus: API.CurrentUserMenu[],
-  moduleId: string
-) {
-  const visit = (items: API.CurrentUserMenu[]): string | undefined => {
-    const sortedItems = [...items].sort((a, b) => (a.sort || 0) - (b.sort || 0));
-    for (const menu of sortedItems) {
-      if (menu.status && menu.status !== "ACTIVE") {
-        continue;
-      }
-      if (menu.hidden) {
-        continue;
-      }
-      const belongsToModule = (menu.moduleId || menu.module_id) === moduleId;
-      if (belongsToModule && menu.path && menu.type === "page") {
-        return menu.path;
-      }
-      const childPath = visit(menu.children || []);
-      if (childPath) {
-        return childPath;
-      }
-    }
-    return undefined;
-  };
-
-  return visit(menus);
-}
-
 function getStoredSelectedModuleId() {
   if (typeof window === "undefined") {
     return undefined;
@@ -419,6 +301,7 @@ function setStoredSelectedModuleId(moduleId: string) {
 function isAuthorizedPath(pathname: string, currentUser: API.CurrentUser) {
   if (
     pathname === "/" ||
+    pathname === "/workspace" ||
     pathname === loginPath ||
     pathname.startsWith("/exception/") ||
     pathname.startsWith("/account/")
@@ -427,23 +310,54 @@ function isAuthorizedPath(pathname: string, currentUser: API.CurrentUser) {
   }
   const menuPaths = flattenCurrentUserMenuPaths(currentUser.menus || []);
   if (menuPaths.length === 0) {
-    return true;
+    return false;
   }
-  return menuPaths.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  if (pathname === '/quant/industry-flow-race') {
+    return hasActiveMenuPermission(currentUser.menus || [], 'menu.quantitative-trading.industry-flow');
+  }
+  return menuPaths.some(({ path, type }) =>
+    pathname === path || (type === 'page' && pathname.startsWith(`${path}/`))
   );
 }
 
 function flattenCurrentUserMenuPaths(menus: API.CurrentUserMenu[]) {
-  const paths: string[] = [];
+  const paths: { path: string; type?: API.CurrentUserMenu['type'] }[] = [];
   const visit = (menu: API.CurrentUserMenu) => {
-    if (menu.status === "ACTIVE" && menu.path) {
-      paths.push(menu.path);
+    if (menu.status && menu.status !== "ACTIVE") return;
+    if (menu.path) {
+      paths.push({ path: menu.path, type: menu.type });
     }
     (menu.children || []).forEach(visit);
   };
   menus.forEach(visit);
   return paths;
+}
+
+function hasActiveMenuPermission(menus: API.CurrentUserMenu[], permissionCode: string): boolean {
+  return menus.some((menu) => {
+    if (menu.status && menu.status !== 'ACTIVE') return false;
+    return (menu.permissionCode || menu.permission_code) === permissionCode ||
+      hasActiveMenuPermission(menu.children || [], permissionCode);
+  });
+}
+
+function findModuleIdForPath(menus: API.CurrentUserMenu[], pathname: string) {
+  let best: { moduleId: string; pathLength: number } | undefined;
+  const visit = (menu: API.CurrentUserMenu) => {
+    const moduleId = menu.moduleId || menu.module_id;
+    const path = menu.path || '';
+    if (
+      moduleId &&
+      path &&
+      (pathname === path || pathname.startsWith(`${path}/`)) &&
+      (!best || path.length > best.pathLength)
+    ) {
+      best = { moduleId, pathLength: path.length };
+    }
+    (menu.children || []).forEach(visit);
+  };
+  menus.forEach(visit);
+  return best?.moduleId;
 }
 
 export const request: RequestConfig = {
@@ -455,7 +369,7 @@ export function rootContainer(container: React.ReactNode) {
   return (
     <>
       <OfflineBanner />
-      <ErrorBoundary>{container}</ErrorBoundary>
+      <ErrorBoundary><ConsoleUiProvider>{container}</ConsoleUiProvider></ErrorBoundary>
     </>
   );
 }

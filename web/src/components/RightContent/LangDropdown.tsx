@@ -1,4 +1,4 @@
-import { CheckOutlined, GlobalOutlined } from '@ant-design/icons';
+import { CheckOutlined, TranslationOutlined } from '@ant-design/icons';
 import { getAllLocales, getLocale, setLocale } from '@umijs/max';
 import type { MenuProps } from 'antd';
 import { Button } from 'antd';
@@ -56,7 +56,7 @@ export const LangDropdown: React.FC = () => {
       }}
     >
       <Button type="text" className={styles.action} aria-label="语言切换">
-        <GlobalOutlined />
+        <TranslationOutlined />
       </Button>
     </HeaderDropdown>
   );

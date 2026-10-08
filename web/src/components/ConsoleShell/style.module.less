@@ -1,0 +1,96 @@
+.globalHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 56px;
+  min-width: 0;
+  gap: 10px;
+  padding: 0 18px 0 8px;
+  border-bottom: 1px solid var(--ant-color-border-secondary, #e9edf3);
+  background: var(--ant-color-bg-container, #fff);
+}
+
+.globalHeader :global(.ant-btn) { white-space: nowrap; }
+.catalogTrigger { flex: none; }
+.brand { display: inline-flex; align-items: center; flex: none; gap: 7px; color: var(--ant-color-text, #1f1f1f); white-space: nowrap; }
+.brand img { width: 25px; height: 25px; object-fit: contain; }
+.brand strong { font-size: 15px; letter-spacing: .1px; }
+.activeWorkspace { background: var(--ant-color-primary-bg, #e6f4ff); color: var(--ant-color-primary, #1677ff); }
+.headerSpacer { flex: 1; }
+.searchTrigger { min-width: 270px; justify-content: flex-start; color: var(--ant-color-text-tertiary, #8c8c8c); }
+.headerLink { display: inline-flex; align-items: center; gap: 5px; padding: 0 6px; color: var(--ant-color-text, #1f1f1f); white-space: nowrap; }
+.headerLink:hover { color: var(--ant-color-primary, #1677ff); }
+.accountTrigger { display: inline-flex; align-items: center; gap: 8px; padding: 0 0 0 6px; border: 0; background: transparent; color: inherit; cursor: pointer; }
+.accountName { display: flex; flex-direction: column; align-items: flex-end; max-width: 132px; overflow: hidden; font-size: 12px; line-height: 17px; text-overflow: ellipsis; white-space: nowrap; }
+.accountName small { color: var(--ant-color-text-tertiary, #8c8c8c); }
+
+.frame {
+  --console-border: #e9edf3;
+  --console-surface: #fff;
+  --console-muted: #f5f7fb;
+  min-height: calc(100vh - 56px);
+  padding-right: 46px;
+  background: var(--ant-color-bg-layout, #f5f7fb);
+}
+
+.frameContent { min-width: 0; }
+.workspaceFrame { --workspace-max-width: 1360px; background: radial-gradient(circle at 14% 96%, #e2f4ff 0, transparent 35%), radial-gradient(circle at 87% 66%, #ecebff 0, transparent 38%), #eef4ff; }
+.workspaceTabs { height: 44px; border-bottom: 1px solid var(--console-border); background: var(--console-surface); }
+.workspaceTabsInner { display: flex; align-items: center; gap: 32px; box-sizing: border-box; width: min(var(--workspace-max-width), calc(100% - 48px)); height: 100%; margin: 0 auto; padding: 0 12px; }
+.workspaceTabs a { display: inline-flex; align-items: center; height: 100%; color: inherit; font-size: 13px; }
+.workspaceTabs a:hover, .workspaceTabs a:focus-visible { color: #1677ff; }
+
+.pageHeader { padding: 20px 24px 0; }
+.pageHeader :global(.ant-breadcrumb) { font-size: 12px; }
+.pageHeader :global(.ant-typography) { margin: 12px 0 0; }
+.specialFrame .frameContent { min-width: 0; }
+
+.catalogRoot :global(.ant-drawer-content-wrapper) { box-shadow: none; }
+.catalogDrawer :global(.ant-drawer-body) { padding: 0; }
+.catalogLayout { display: grid; grid-template-columns: 240px minmax(0, 1fr); height: calc(100vh - 56px); overflow: hidden; }
+.catalogCategories { display: flex; flex-direction: column; padding: 8px 0 24px; overflow-y: auto; border-right: 1px solid var(--console-border, #e9edf3); background: var(--console-surface, #fff); }
+.catalogCategories button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 42px; padding: 0 20px; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.catalogCategories button:hover, .catalogCategories button:focus-visible { background: var(--console-muted, #f5f7fb); }
+.catalogCategories .selectedPrimary { background: #eef2f7; font-weight: 600; }
+.categoryList { display: flex; flex-direction: column; padding: 8px 0; }
+.categoryList button { min-height: 34px; padding-left: 48px; font-size: 13px; }
+.catalogCategories .selectedCategory { border-right: 3px solid var(--ant-color-primary, #1677ff); color: var(--ant-color-primary, #1677ff); }
+.catalogMain { min-width: 0; padding: 18px 24px 40px; overflow-y: auto; background: var(--console-surface, #fff); }
+.catalogMain > :global(.ant-typography) { display: block; margin: 0 0 5px; }
+.catalogSearch { display: flex; width: 100%; margin: 16px 0 20px; background: var(--console-muted, #f5f7fb); }
+.catalogSection { padding-top: 12px; border-top: 1px solid var(--console-border, #e9edf3); }
+.catalogSection + .catalogSection { margin-top: 28px; }
+.catalogSection :global(.ant-typography) { margin: 0 0 12px; }
+.catalogPageGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px 20px; }
+.catalogPage { display: flex; align-items: center; min-width: 0; min-height: 32px; padding: 4px 0; border: 0; background: transparent; color: var(--ant-color-text-secondary, #595959); text-align: left; cursor: pointer; }
+.catalogPage:hover, .catalogPage:focus-visible { color: var(--ant-color-primary, #1677ff); text-decoration: underline; }
+.recentPanel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 20px; margin-top: 20px; }
+
+.rail { position: fixed; top: 56px; right: 0; bottom: 0; z-index: 90; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 46px; border-left: 1px solid var(--console-border); background: var(--console-surface); }
+.railActions { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-bottom: 8px; }
+.rail :global(.ant-btn) { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; }
+.railToggle { flex: none; margin-bottom: 8px; }
+.railCollapsed { width: 38px; }
+.railCollapsed .railToggle { width: 38px; padding: 0; }
+
+@media (max-width: 900px) {
+  .searchTrigger { min-width: 36px; width: 36px; overflow: hidden; padding: 0 8px; font-size: 0; }
+  .headerLink span, .accountName { display: none; }
+  .frame { padding-right: 46px; }
+  .catalogLayout { grid-template-columns: 190px minmax(0, 1fr); }
+  .catalogPageGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .globalHeader { gap: 2px; padding: 0 4px; }
+  .brand strong { display: none; }
+  .catalogLayout { display: flex; flex-direction: column; }
+  .catalogCategories { flex: none; flex-direction: row; overflow-x: auto; padding: 4px; border-right: 0; border-bottom: 1px solid var(--console-border); }
+  .catalogCategories button { width: auto; white-space: nowrap; padding: 0 10px; }
+  .categoryList { flex-direction: row; padding: 0; }
+  .categoryList button { padding: 0 10px; }
+  .catalogMain { padding: 16px; }
+  .catalogPageGrid, .recentPanel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .workspaceTabsInner { width: calc(100% - 32px); padding: 0 8px; }
+  .pageHeader { padding: 16px 16px 0; }
+}
