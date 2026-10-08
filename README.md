@@ -2,6 +2,8 @@
 
 English | [简体中文](README.zh-CN.md)
 
+<p align="center"><img src="docs/assets/brand-logo.png" alt="go-ant-design-pro-admin" width="180"></p>
+
 SDD-driven admin framework template with Higress, Kratos, Ant Design Pro,
 MySQL, Redis, and optional observability modules.
 
@@ -11,7 +13,10 @@ Spec Kit / SDD artifacts drive product integration.
 
 ## What Is Included
 
-- Ant Design Pro simple-mode admin frontend.
+- Console-style admin frontend: shell header, module rail, workspace home,
+  and a refreshed sign-in page (ported from the easy-money console).
+- Harness agent workspace: chat sessions, SSE event stream, workspaces, and
+  the standalone `agent-sdk/` Python runtime behind it.
 - Kratos Go backend service.
 - MySQL-backed user, role, menu, module, and button-permission RBAC.
 - Redis-backed local login token storage.

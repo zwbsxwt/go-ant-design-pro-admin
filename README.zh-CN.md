@@ -2,13 +2,16 @@
 
 [English](README.md) | 简体中文
 
+<p align="center"><img src="docs/assets/brand-logo.png" alt="go-ant-design-pro-admin" width="180"></p>
+
 这是一个 SDD 驱动的后台管理框架模板，组合 Higress、Kratos、Ant Design Pro、MySQL、Redis，并保留可插拔的 Prometheus / Grafana 观测模块。
 
 本仓库适合作为后台管理系统的开源模板。前端、后端、网关、MCP、观测模块保持独立可运行，功能整合通过 Spec Kit / SDD 规格推进。
 
 ## 已包含能力
 
-- Ant Design Pro 精简模式后台前端。
+- 控制台式后台前端：外壳顶栏、模块导航、工作台首页与全新登录页（样式来自 easy-money 控制台）。
+- Harness 智能工作台：Agent 会话、SSE 事件流、会话工作区，以及独立的 `agent-sdk/` Python 运行时。
 - Kratos Go 后台服务。
 - MySQL 持久化用户、角色、菜单、模块、按钮权限 RBAC。
 - Redis 存储本地登录 token。
